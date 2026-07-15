@@ -3,9 +3,6 @@ import { useAuthStore } from '@/stores/auth'
 
 // WebSocket 事件类型
 export type WSEventType =
-  | 'scraper_task_start'
-  | 'scraper_task_complete'
-  | 'scraper_item_complete'
   | 'strm_sync_task_start'
   | 'strm_sync_task_complete'
 

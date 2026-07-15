@@ -18,9 +18,7 @@
         <!-- 用户信息 -->
         <div class="user-info">
           <div class="user-avatar">
-            <el-icon size="24">
-              <User />
-            </el-icon>
+            <img src="/qms-icon.png" alt="QMS" class="qms-icon" />
           </div>
           <div class="user-details">
             <div class="username">{{ authStore.user?.username || '用户' }}</div>
@@ -339,9 +337,7 @@ const getDefaultOpeneds = () => {
   if (route.path.startsWith('/sync')) {
     openeds.push('/sync')
   }
-  if (route.path.startsWith('/scrape')) {
-    openeds.push('/scrape')
-  }
+  
   if (route.path.includes('upload-queue') || route.path.includes('download-queue')) {
     openeds.push('/upload-queue')
   }
@@ -368,7 +364,7 @@ const getProgressStatus = () => {
 }
 
 const openHelp = () => {
-  window.open('https://gitee.com/qicfan/qmediasync/wikis/Home', '_blank')
+  window.open('https://qmediasync.cn/', '_blank')
 }
 
 // 组件挂载时加载数据
@@ -436,13 +432,18 @@ onUnmounted(() => {
 .user-avatar {
   width: 40px;
   height: 40px;
-  border-radius: 50%;
-  background-color: #409eff;
+  border-radius: 8px;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: white;
   flex-shrink: 0;
+  overflow: hidden;
+}
+
+.qms-icon {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
 }
 
 .user-details {

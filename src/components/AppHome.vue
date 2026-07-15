@@ -4,7 +4,7 @@ import { Document } from '@element-plus/icons-vue'
 import VersionManager from './VersionManager.vue'
 import QueueStatsCard from './QueueStatsCard.vue'
 import HourlyStatsChart from './HourlyStatsChart.vue'
-import AnnouncementCard from './AnnouncementCard.vue'
+
 import AppLogViewer from './AppLogViewer.vue'
 
 const showLogDialog = ref(false)
@@ -30,7 +30,6 @@ const handleLogDialogClose = () => {
         </el-button>
       </div>
     </div>
-    <AnnouncementCard />
 
     <div class="stats-section">
       <div class="stats-row">
@@ -42,16 +41,6 @@ const handleLogDialogClose = () => {
     <div class="info-section">
       <div class="info-grid">
         <VersionManager />
-
-        <div class="info-card sponsor-card">
-          <div class="info-card-header">
-            <span class="info-icon">☕</span>
-            <span>支持作者</span>
-          </div>
-          <div class="sponsor-content">
-            <img src="https://s.mqfamily.top/alipay_wechat.jpg" alt="请作者喝杯咖啡" />
-          </div>
-        </div>
 
         <div class="info-card notice-card">
           <div class="info-card-header">
@@ -161,7 +150,7 @@ const handleLogDialogClose = () => {
 
 .info-grid {
   display: grid;
-  grid-template-columns: 280px 280px 1fr;
+  grid-template-columns: 280px 1fr;
   gap: 20px;
 }
 
