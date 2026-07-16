@@ -337,7 +337,7 @@ const getDefaultOpeneds = () => {
   if (route.path.startsWith('/sync')) {
     openeds.push('/sync')
   }
-  
+
   if (route.path.includes('upload-queue') || route.path.includes('download-queue')) {
     openeds.push('/upload-queue')
   }
