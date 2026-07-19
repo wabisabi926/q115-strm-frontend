@@ -183,6 +183,74 @@ interface FileListResponse {
   current_path: string
 }
 
+interface AuthSourceType {
+  PKCE: 'pkce'
+  OAuth: 'oauth'
+}
+
+interface AuthProvider {
+  QMediaSync: 'qmediasync'
+  MQFamily: 'mqfamily'
+  MoviePilot: 'moviepilot'
+  CloudDrive: 'clouddrive'
+}
+
+interface AuthSource {
+  Provider: AuthProvider[keyof AuthProvider]
+  AppID: string
+  AppIDName: string
+  SupportsPKCE: boolean
+  SupportsOAuth: boolean
+}
+
+interface OAuthToken {
+  access_token: string
+  refresh_token: string
+  expires_in: number
+  token_type?: string
+}
+
+interface OAuthPollStatus {
+  status: string
+  access_token?: string
+  refresh_token?: string
+  expires_in?: number
+  message?: string
+}
+
+interface QrCodeData {
+  uid: string
+  time: number
+  sign: string
+  qrcode: string
+  code_verifier: string
+}
+
+interface QrCodeStatus {
+  msg: string
+  status: number
+}
+
+interface AppIdSource {
+  provider: string
+  app_id: string
+  app_id_name: string
+  supports_pkce: boolean
+  supports_oauth: boolean
+}
+
+interface AppIdSearchResult {
+  items: AppIdSource[]
+  total: number
+}
+
+interface CloudAccountWithAuth extends CloudAccount {
+  app_id?: string
+  app_id_name?: string
+  auth_source_type?: string
+  auth_provider?: string
+}
+
 export type {
   oo5Account,
   LibForm,
@@ -196,6 +264,7 @@ export type {
   TelegramSetting,
   DirInfo,
   CloudAccount,
+  CloudAccountWithAuth,
   BackupTaskType,
   BackupStatus,
   BackupType,
@@ -209,4 +278,13 @@ export type {
   FileOperationType,
   FileSystemItem,
   FileListResponse,
+  AuthSourceType,
+  AuthProvider,
+  AuthSource,
+  OAuthToken,
+  OAuthPollStatus,
+  QrCodeData,
+  QrCodeStatus,
+  AppIdSource,
+  AppIdSearchResult,
 }
