@@ -18,7 +18,7 @@
         <!-- 用户信息 -->
         <div class="user-info">
           <div class="user-avatar">
-            <img src="/qms-icon.png" alt="QMS" class="qms-icon" />
+            <img src="/favicon.ico" alt="QMS" class="qms-icon" />
           </div>
           <div class="user-details">
             <div class="username">{{ authStore.user?.username || '用户' }}</div>
