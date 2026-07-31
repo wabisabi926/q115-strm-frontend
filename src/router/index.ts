@@ -282,6 +282,18 @@ const routes = [
     },
   },
   {
+    path: '/settings/fnos-proxy',
+    name: 'settings-fnos-proxy',
+    component: () => import('@/components/AppFnosProxy.vue'),
+    meta: {
+      title: 'FnOS',
+      requiresAuth: true,
+      parent: 'settings',
+      icon: 'Connection',
+      showInMenu: true,
+    },
+  },
+  {
     path: '/settings/threads',
     name: 'settings-threads',
     component: AppThreadSettings,

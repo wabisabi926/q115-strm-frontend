@@ -32,9 +32,10 @@
               :prefix-icon="Link"
               clearable
             />
-            <p style="color: red; font-weight: bold; margin-left: 16px; font-size: 28px">
-              输入Emby地址后，页面往下滚，点击"保存设置"按钮后，重启QMediaSync才能生效
-            </p>
+            <div class="form-help">
+              <el-icon><InfoFilled /></el-icon>
+              <span>输入Emby地址后，页面往下滚，点击"保存设置"按钮后，重启QMediaSync才能生效</span>
+            </div>
             <div v-if="embyExample" class="emby-example-inline">
               <span class="example-label">示例格式：</span>
               <code class="example-url">{{ embyExample }}</code>
