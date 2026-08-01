@@ -12,4 +12,8 @@ export default defineConfig({
       '@': fileURLToPath(new URL('./src', import.meta.url))
     },
   },
+  build: {
+    outDir: '../web_statics',
+    emptyOutDir: true,
+  },
 });

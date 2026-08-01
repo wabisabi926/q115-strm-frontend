@@ -271,20 +271,8 @@
             </div>
           </div>
 
-          <!-- 媒体库同步选择卡片 - 只有启用同步时才显示 -->
-          <el-card v-if="embyData.sync_enabled === 1" class="settings-card library-selection-card" shadow="hover">
-            <template #header>
-              <div class="card-header-wrapper">
-                <div class="card-header-icon library-icon">
-                  <el-icon :size="24"><FolderOpened /></el-icon>
-                </div>
-                <div class="card-header-content">
-                  <h3 class="card-title">媒体库同步选择</h3>
-                  <p class="card-subtitle">选择需要同步的Emby媒体库</p>
-                </div>
-              </div>
-            </template>
-
+          <!-- 媒体库同步选择 - 只有启用同步时才显示 -->
+          <div v-if="embyData.sync_enabled === 1" class="library-selection-section">
             <el-form-item label="同步模式">
               <el-radio-group v-model="embyData.sync_all_libraries" @change="handleSyncModeChange">
                 <el-radio :label="1">全部媒体库</el-radio>
@@ -298,9 +286,9 @@
 
             <el-form-item label="选择媒体库" v-if="embyData.sync_all_libraries === 0">
               <el-checkbox-group v-model="selectedLibraryIds" class="library-checkbox-group">
-                <el-checkbox 
-                  v-for="lib in availableLibraries" 
-                  :key="lib.library_id" 
+                <el-checkbox
+                  v-for="lib in availableLibraries"
+                  :key="lib.library_id"
                   :label="lib.library_id"
                   class="library-checkbox"
                 >
@@ -312,7 +300,7 @@
                 <span class="warning-text">请先配置Emby服务器地址并保存，然后执行一次同步以获取媒体库列表</span>
               </div>
             </el-form-item>
-          </el-card>
+          </div>
 
           <el-divider class="feature-divider" />
 
@@ -439,16 +427,6 @@
 
         <div class="form-actions-wrapper">
           <el-button
-            type="success"
-            @click="saveEmbyConfig"
-            :loading="embyLoading"
-            :icon="Check"
-            size="large"
-            class="save-btn"
-          >
-            保存设置
-          </el-button>
-          <el-button
             type="primary"
             @click="praseEmby"
             :loading="embyLoading"
@@ -470,6 +448,25 @@
           </div>
         </div>
       </el-form>
+
+      <el-card class="settings-card save-config-card" shadow="hover">
+        <div class="save-config-content">
+          <el-button
+            type="success"
+            @click="saveEmbyConfig"
+            :loading="embyLoading"
+            :icon="Check"
+            size="large"
+            class="save-btn"
+          >
+            保存设置
+          </el-button>
+          <div class="form-help save-config-help">
+            <el-icon><InfoFilled /></el-icon>
+            <span>保存以上所有修改，重启后生效</span>
+          </div>
+        </div>
+      </el-card>
 
       <el-card class="sync-management-card" shadow="hover">
         <template #header>
@@ -702,14 +699,14 @@ const loadEmbyConfig = async () => {
         embyData.selected_libraries = config.selected_libraries || '[]'
         embyData.enable_playback_overview = config.enable_playback_overview ?? 0
         embyData.enable_playback_progress = config.enable_playback_progress ?? 0
-        
+
         // 解析选中的媒体库ID列表
         try {
           selectedLibraryIds.value = JSON.parse(embyData.selected_libraries)
         } catch (e) {
           selectedLibraryIds.value = []
         }
-        
+
         // 加载媒体库列表
         await loadEmbyLibraries()
       } else {
@@ -1028,6 +1025,31 @@ onBeforeUnmount(() => {
 
 .settings-card:hover {
   transform: translateY(-2px);
+}
+
+.library-selection-section {
+  padding: 8px 0;
+}
+
+.save-config-card {
+  margin-top: 24px;
+}
+
+.save-config-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  padding: 16px;
+}
+
+.save-config-content .save-btn {
+  width: 200px;
+  min-width: 200px;
+}
+
+.save-config-help {
+  justify-content: center;
 }
 
 .card-header-wrapper {
@@ -1510,7 +1532,17 @@ onBeforeUnmount(() => {
   }
 
   .form-help {
-    flex-wrap: wrap;
+    flex-wrap: nowrap;
+    align-items: flex-start;
+  }
+
+  .form-help .el-icon {
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+
+  .form-help span {
+    word-break: break-all;
   }
 
   .config-links {
