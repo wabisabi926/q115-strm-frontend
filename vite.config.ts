@@ -14,7 +14,7 @@ export default defineConfig({
     },
   },
   build: {
-    outDir: '../web_statics',
+    outDir: '../qmediasync/web_statics',
     emptyOutDir: true,
   },
 })

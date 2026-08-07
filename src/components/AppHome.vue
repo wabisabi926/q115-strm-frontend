@@ -62,8 +62,6 @@ const handleLogDialogClose = () => {
             </div>
             <div class="notice-item">
               <span class="notice-number">4</span>
-            <div class="notice-item">
-              <span class="notice-number">4</span>
               <span
                 >问题请在
                 <a href="https://github.com/qicfan/qmediasync" target="_blank">GitHub</a> 提交issue
