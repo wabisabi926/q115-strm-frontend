@@ -1,9 +1,9 @@
-<template>
+﻿<template>
   <div class="upload-queue-container">
     <div class="card-header">
       <div>
         <h2 class="hidden-md-and-down">上传队列</h2>
-        <p>这里包含strm同步时产生的元数据的上传和刮削产生的上传任务。</p>
+        <p>这里包含strm同步时产生的元数据的上传任务。</p>
       </div>
       <div class="header-actions">
         <el-button type="info" @click="refreshQueue">刷新</el-button>

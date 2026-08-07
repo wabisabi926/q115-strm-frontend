@@ -1,4 +1,4 @@
-type defType = '本地路径' | 'WebDAV' | 'alist302'
+﻿type defType = '本地路径' | 'WebDAV' | 'alist302'
 type CopyMetaFileType = '关闭' | '复制' | '软链接'
 type SyncType = '手动' | '定时' | '监控变更'
 type CloudType = '115' | 'other'
@@ -163,7 +163,7 @@ interface BackupRecordsResponse {
 
 // 文件管理器相关类型定义
 type FileType = 'directory' | 'video' | 'image' | 'nfo' | 'other'
-type FileOperationType = 'STRM_GENERATE' | 'SCRAPE_ORGANIZE' | 'GENERATE_ED2K' | 'DELETE'
+type FileOperationType = 'STRM_GENERATE' | 'DELETE'
 
 // 文件系统项目接口
 interface FileSystemItem {

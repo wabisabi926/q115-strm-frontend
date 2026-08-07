@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <div class="main-content-container thread-settings-container">
     <el-form
       :model="formData"
@@ -15,7 +15,7 @@
           size="large"
         />
         <div class="form-help">
-          下载队列的每秒处理数量，每秒加入下载中的数量而不是每秒下载数量，所以下载队列下载中状态可能显示为大于此值，这是正常的。最大10，最小1，最大是因为要给播放和刮削留出空余。
+          下载队列的每秒处理数量，每秒加入下载中的数量而不是每秒下载数量，所以下载队列下载中状态可能显示为大于此值，这是正常的。最大10，最小1，最大是因为要给播放留出空余。
         </div>
       </el-form-item>
 
