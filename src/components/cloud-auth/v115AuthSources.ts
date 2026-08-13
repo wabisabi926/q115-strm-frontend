@@ -73,21 +73,9 @@ export const featuredBuiltInAppIDs = [
   { label: '媒体播放器', value: '100195125', appName: '媒体播放器' },
 ] as const
 
+// 注意：QMediaSync（100197849）与 Q115-STRM（100197665）的内置中转网页授权已失效，
+// 不再出现在「网页授权」下拉框中，仅保留在「扫码授权」的 APP ID 选择里。
 export const webAuthProviders: V115WebAuthProviderOption[] = [
-  {
-    value: 'built_in_relay:qmediasync:QMediaSync',
-    label: 'QMediaSync',
-    sourceType: 'built_in_relay',
-    provider: 'qmediasync',
-    appName: 'QMediaSync',
-  },
-  {
-    value: 'built_in_relay:mqfamily:Q115-STRM',
-    label: 'Q115-STRM',
-    sourceType: 'built_in_relay',
-    provider: 'mqfamily',
-    appName: 'Q115-STRM',
-  },
   {
     value: 'third_party_service:moviepilot:MoviePilot-115',
     label: 'MoviePilot',
@@ -106,7 +94,7 @@ export const webAuthProviders: V115WebAuthProviderOption[] = [
   },
 ]
 
-export const defaultWebAuthProviderValue = webAuthProviders[0].value
+export const defaultWebAuthProviderValue = webAuthProviders[0]?.value ?? ''
 
 export const buildV115CreatePayload = (selection: V115CreateSelection): V115CreatePayload => {
   if (selection.authMode === 'oauth') {
