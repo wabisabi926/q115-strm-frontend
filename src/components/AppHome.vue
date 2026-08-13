@@ -1,4 +1,4 @@
-﻿<script setup lang="ts">
+<script setup lang="ts">
 import { ref } from 'vue'
 import { Document } from '@element-plus/icons-vue'
 import VersionManager from './VersionManager.vue'
@@ -64,7 +64,7 @@ const handleLogDialogClose = () => {
               <span class="notice-number">4</span>
               <span
                 >问题请在
-                <a href="https://github.com/qicfan/qmediasync" target="_blank">GitHub</a> 提交issue
+                <a href="https://github.com/wabisabi926/qmediasync" target="_blank">GitHub</a> 提交issue
               </span>
             </div>
           </div>
