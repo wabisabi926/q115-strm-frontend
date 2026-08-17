@@ -1,28 +1,10 @@
 <template>
-  <div class="sync-records-container">
-    <!-- 同步记录卡片 -->
-    <div class="sync-records-card">
-      <div class="header-left">
-        <h2 class="card-title hidden-md-and-down">同步记录</h2>
-        <p class="card-subtitle">只会保留3天的记录，每天0点会删除3天前的所有记录</p>
-      </div>
-      <div class="header-right">
-        <!-- <el-button
-              type="primary"
-              @click="startManualSync"
-              :loading="syncLoading"
-              :disabled="hasRunningSyncTask"
-              size="large"
-            >
-              <el-icon><Refresh /></el-icon>
-              手动同步
-            </el-button> -->
-      </div>
-    </div>
+  <div class="main-content-container main-content-container--list sync-records-container">
+    <PageHeader title="同步记录" subtitle="只会保留 3 天的记录，每天 0 点会删除 3 天前的所有记录" :icon="Document" variant="list" />
 
     <div class="sync-content">
       <!-- 批量删除控制 -->
-      <div style="display: flex; align-items: center; margin-bottom: 8px; gap: 12px">
+      <div class="batch-delete-control">
         <el-checkbox v-model="batchMode" size="large">批量删除</el-checkbox>
         <el-button
           v-if="batchMode"
@@ -229,10 +211,12 @@
 
 <script setup lang="ts">
 import { SERVER_URL } from '@/const'
+import PageHeader from '@/components/common/PageHeader.vue'
 import type { AxiosStatic } from 'axios'
 import { inject, onMounted, onUnmounted, ref, computed, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import { ElMessage, ElMessageBox } from 'element-plus'
+import { Document } from '@element-plus/icons-vue'
 import { formatDateTime } from '@/utils/timeUtils'
 
 interface SyncRecord {
@@ -556,46 +540,20 @@ watch(batchMode, (val) => {
   display: flex;
   flex-direction: column;
   gap: 20px;
-  padding: 0;
-}
-
-.sync-records-card {
-  width: 100%;
-  max-width: none;
-  margin: 0;
-  border: 0;
-}
-
-.card-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  gap: 12px;
-}
-
-.header-left {
-  flex: 1;
-}
-
-.header-right {
-  flex-shrink: 0;
-}
-
-.card-title {
-  margin: 0 0 8px 0;
-  font-size: 24px;
-  font-weight: 600;
-  color: #303133;
-}
-
-.card-subtitle {
-  margin: 0;
-  font-size: 14px;
-  color: #909399;
+  padding: 20px;
+  box-sizing: border-box;
 }
 
 .sync-content {
   margin-top: 12px;
+}
+
+.batch-delete-control {
+  display: flex;
+  align-items: center;
+  margin-bottom: 8px;
+  gap: 12px;
+  flex-wrap: wrap;
 }
 
 .sync-table {
@@ -681,26 +639,8 @@ watch(batchMode, (val) => {
 
 /* 移动端适配 */
 @media (max-width: 768px) {
-  .card-header {
-    flex-direction: column;
-    align-items: stretch;
-    gap: 16px;
-  }
-
-  .header-right {
-    width: 100%;
-  }
-
-  .header-right .el-button {
-    width: 100%;
-  }
-
-  .card-title {
-    font-size: 20px;
-  }
-
-  .card-subtitle {
-    font-size: 13px;
+  .sync-records-container {
+    padding: 12px;
   }
 
   .sync-table {
@@ -762,10 +702,6 @@ watch(batchMode, (val) => {
 
 /* 小屏移动设备 */
 @media (max-width: 480px) {
-  .card-title {
-    font-size: 18px;
-  }
-
   /* 进一步优化固定列在小屏幕上的显示 */
   .sync-table :deep(.el-table__fixed-right) {
     right: 0 !important;

@@ -1,19 +1,21 @@
 <template>
-  <div class="backup-records-container">
-    <div class="action-section">
-      <el-button
-        type="primary"
-        size="large"
-        :loading="backupStarting"
-        :disabled="backupStore.isRunning"
-        @click="startManualBackup"
-      >
-        <el-icon><Upload /></el-icon>
-        <span>手动备份</span>
-      </el-button>
-      <span v-if="backupStore.isRunning" style="margin-left: 12px; color: #909399">
-        备份正在进行中...
-      </span>
+  <div class="main-content-container main-content-container--list">
+    <PageHeader title="备份记录" subtitle="管理数据库备份记录，支持手动备份与恢复" :icon="Upload" variant="list">
+      <template #actions>
+        <el-button
+          type="primary"
+          :loading="backupStarting"
+          :disabled="backupStore.isRunning"
+          @click="startManualBackup"
+        >
+          <el-icon><Upload /></el-icon>
+          <span>手动备份</span>
+        </el-button>
+      </template>
+    </PageHeader>
+
+    <div v-if="backupStore.isRunning" class="backup-status-tip">
+      备份正在进行中...
     </div>
 
     <div class="records-section">
@@ -110,6 +112,7 @@
 <script setup lang="ts">
 import { ref, onMounted, inject } from 'vue'
 import { Upload } from '@element-plus/icons-vue'
+import PageHeader from '@/components/common/PageHeader.vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import type { AxiosStatic } from 'axios'
 import { SERVER_URL } from '@/const'
@@ -346,30 +349,15 @@ onMounted(() => {
 </script>
 
 <style scoped>
-.backup-records-container {
-  padding: 20px;
-}
-
-.action-section {
-  margin-bottom: 20px;
-  padding: 16px;
-  background: #f5f7fa;
-  border-radius: 4px;
-  max-width: 1200px;
+.backup-status-tip {
+  margin-bottom: var(--space-4);
+  padding: var(--space-2) var(--space-4);
+  color: var(--color-text-tertiary);
+  font-size: var(--text-sm);
 }
 
 .records-section {
   margin-bottom: 20px;
   max-width: 1400px;
-}
-
-@media (max-width: 768px) {
-  .backup-records-container {
-    padding: 10px;
-  }
-
-  .action-section {
-    padding: 12px;
-  }
 }
 </style>

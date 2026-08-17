@@ -151,10 +151,12 @@ watch(showInput, (newVal) => {
   gap: 8px;
   align-items: center;
   min-height: 32px;
+  width: 100%;
 }
 
 .ext-tag {
   margin-bottom: 0;
+  flex-shrink: 0;
 }
 
 .ext-input-full {
@@ -164,5 +166,23 @@ watch(showInput, (newVal) => {
 
 .add-tag-btn {
   margin-left: 0;
+  flex-shrink: 0;
+  white-space: nowrap;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  overflow: visible;
+  min-width: fit-content;
+  height: 32px;
+  color: var(--brand-500) !important;
+  background: transparent !important;
+  border: 1px solid var(--brand-500) !important;
+}
+
+.add-tag-btn:hover {
+  color: var(--brand-600) !important;
+  background: var(--brand-50) !important;
+  border-color: var(--brand-600) !important;
 }
 </style>

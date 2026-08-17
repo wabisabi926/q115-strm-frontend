@@ -1,10 +1,12 @@
-﻿<template>
+<template>
   <div class="main-content-container thread-settings-container">
+    <PageHeader title="线程与性能设置" subtitle="配置系统并发与请求速率参数" :icon="Setting" />
+
     <el-form
       :model="formData"
       :label-position="checkIsMobile ? 'top' : 'left'"
       :label-width="200"
-      class="thread-form"
+      class="thread-form settings-form"
     >
       <el-form-item label="下载队列每秒处理数量" prop="downloadThreads">
         <el-input-number
@@ -96,7 +98,6 @@
       </div>
     </el-form>
 
-    <!-- 保存状态显示 -->
     <el-alert
       v-if="saveStatus"
       :title="saveStatus.title"
@@ -107,15 +108,15 @@
       class="save-status"
     />
     <div class="security-content">
-      <div class="warning-section">
-        <el-alert title="使用提示" type="warning" :closable="false" show-icon>
-          <template #default>
-            线程数设置过高可能导致115提示访问量过高，请根据实际情况合理设置。一般建议总线程数不超过10。<br />
-            如果您授权了多个第三方平台，请保证其他第三方的线程数+本项目的线程数不要过高。<br />
-            如果日志中提示访问量过高，请适当减少接口请求QPS。<br />
-            如果日志中下载文件提示403，请适当减少下载QPS。<br />
-          </template>
-        </el-alert>
+      <div class="form-help usage-tip">
+        <el-icon><InfoFilled /></el-icon>
+        <div class="usage-tip-content">
+          <p class="usage-tip-title">使用提示</p>
+          <p>线程数设置过高可能导致 115 提示访问量过高，请根据实际情况合理设置。一般建议总线程数不超过 10。</p>
+          <p>如果您授权了多个第三方平台，请保证其他第三方的线程数 + 本项目的线程数不要过高。</p>
+          <p>如果日志中提示访问量过高，请适当减少接口请求 QPS。</p>
+          <p>如果日志中下载文件提示 403，请适当减少下载 QPS。</p>
+        </div>
       </div>
     </div>
   </div>
@@ -124,7 +125,8 @@
 <script setup lang="ts">
 import { reactive, ref, inject, onMounted } from 'vue'
 import { ElMessage } from 'element-plus'
-import { Check } from '@element-plus/icons-vue'
+import PageHeader from '@/components/common/PageHeader.vue'
+import { Check, InfoFilled, Setting } from '@element-plus/icons-vue'
 import { SERVER_URL } from '@/const'
 import type { AxiosStatic } from 'axios'
 import { isMobile } from '@/utils/deviceUtils'
@@ -150,7 +152,6 @@ const checkIsMobile = ref(isMobile())
 const loading = ref(false)
 const saveStatus = ref<SaveStatus | null>(null)
 
-// 表单数据
 const formData = reactive<ThreadSettings>({
   downloadThreads: 1,
   fileDetailThreads: 3,
@@ -160,12 +161,10 @@ const formData = reactive<ThreadSettings>({
   fileListPageSize: 1150,
 })
 
-// 页面挂载时获取当前设置
 onMounted(async () => {
   await fetchThreadSettings()
 })
 
-// 获取线程设置
 async function fetchThreadSettings() {
   try {
     loading.value = true
@@ -189,7 +188,6 @@ async function fetchThreadSettings() {
   }
 }
 
-// 保存线程设置
 async function saveSettings() {
   try {
     loading.value = true
@@ -215,7 +213,6 @@ async function saveSettings() {
       description: '线程设置已成功保存',
     }
 
-    // 3秒后清除状态提示
     setTimeout(() => {
       saveStatus.value = null
     }, 3000)
@@ -232,40 +229,56 @@ async function saveSettings() {
 }
 </script>
 
-<style scoped>
+<style scoped lang="css">
 .thread-settings-container {
-  padding: 20px;
   max-width: 800px;
-  /* margin: 0 auto; */
-}
-
-/* .thread-form { */
-/* background: #fff;
-  padding: 20px;
-  border-radius: 8px;
-  box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1); */
-/* } */
-
-.form-help {
-  color: #909399;
-  font-size: 12px;
-  margin-top: 5px;
 }
 
 .form-actions {
-  margin-top: 30px;
-  text-align: center;
+  display: flex;
+  gap: var(--space-3);
+  margin-top: var(--space-6);
 }
 
 .save-status {
-  margin-top: 20px;
+  margin-top: var(--space-5);
 }
 
 .security-content {
-  margin-top: 30px;
+  margin-top: var(--space-6);
 }
 
-.warning-section {
-  margin-bottom: 20px;
+.usage-tip {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-2);
+  padding: var(--space-3) var(--space-4);
+  background: var(--color-bg-elevated);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--neutral-100);
+}
+
+.usage-tip .el-icon {
+  flex-shrink: 0;
+  margin-top: 2px;
+  color: var(--brand-500);
+}
+
+.usage-tip-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.usage-tip-title {
+  margin: 0 0 var(--space-1) !important;
+  font-weight: var(--weight-medium);
+  color: var(--color-text-primary);
+}
+
+.usage-tip-content p {
+  margin: var(--space-1) 0;
+  font-size: var(--text-xs);
+  color: var(--color-text-tertiary);
+  line-height: var(--leading-relaxed);
 }
 </style>

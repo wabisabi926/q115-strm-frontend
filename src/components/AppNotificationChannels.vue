@@ -1,26 +1,15 @@
 <template>
   <div class="notification-page">
-    <div class="page-header">
-      <div class="header-content">
-        <div class="header-icon">
-          <el-icon :size="32"><Bell /></el-icon>
-        </div>
-        <div class="header-text">
-          <h2>通知管理</h2>
-          <p class="header-desc">
-            管理系统的通知渠道，支持 Telegram、MeoW、Bark、Server酱、Webhook 等多种推送方式
-          </p>
-        </div>
-      </div>
-      <div class="header-actions">
+    <PageHeader title="通知管理" subtitle="管理系统的通知渠道，支持 Telegram、MeoW、Bark、Server酱、Webhook 等多种推送方式" :icon="Bell" :icon-size="24">
+      <template #actions>
         <el-button type="primary" :icon="Plus" @click="showCreateDialog">
           <span class="btn-text">添加渠道</span>
         </el-button>
         <el-button :icon="Refresh" @click="loadChannels" :loading="loading">
           <span class="btn-text">刷新</span>
         </el-button>
-      </div>
-    </div>
+      </template>
+    </PageHeader>
 
     <div class="main-content-container notification-channels-container">
       <div v-if="channels.length === 0 && !loading" class="empty-state">
@@ -38,7 +27,7 @@
         <el-card
           v-for="channel in channels"
           :key="channel.id"
-          class="channel-card"
+          class="channel-card status-card"
           :class="{ 'channel-disabled': !channel.is_enabled }"
           shadow="hover"
         >
@@ -495,6 +484,7 @@
 <script setup lang="ts">
 import { reactive, ref, onMounted, inject, computed, type Component } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
+import PageHeader from '@/components/common/PageHeader.vue'
 import {
   Plus,
   Refresh,
@@ -1141,75 +1131,54 @@ onMounted(() => {
 }
 
 .page-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 20px 24px;
-  background: var(--el-bg-color);
-  border-bottom: 1px solid var(--el-border-color-lighter);
-  flex-wrap: wrap;
-  gap: 16px;
+  padding: var(--space-5) var(--space-6);
+  gap: var(--space-4);
 }
 
 .header-content {
-  display: flex;
-  align-items: center;
-  gap: 16px;
+  gap: var(--space-4);
 }
 
 .header-icon {
-  width: 56px;
-  height: 56px;
-  border-radius: 12px;
-  background: linear-gradient(135deg, var(--el-color-primary-light-5), var(--el-color-primary));
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: white;
+  width: 48px;
+  height: 48px;
+  border-radius: var(--radius-lg);
 }
 
 .header-text h2 {
-  margin: 0;
-  font-size: 20px;
-  font-weight: 600;
-  color: var(--el-text-color-primary);
+  font-size: var(--text-2xl);
 }
 
 .header-desc {
-  margin: 4px 0 0;
-  font-size: 13px;
-  color: var(--el-text-color-secondary);
+  font-size: var(--text-sm);
 }
 
 .header-actions {
-  display: flex;
-  gap: 8px;
+  gap: var(--space-2);
 }
 
 .notification-channels-container {
-  padding: 20px 24px;
+  padding: var(--space-5) var(--space-6);
 }
 
 .empty-state {
-  padding: 60px 0;
+  padding: var(--space-16) 0;
   text-align: center;
 }
 
 .channels-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
-  gap: 16px;
+  gap: var(--space-4);
 }
 
 .channel-card {
-  border-radius: 12px;
-  border: 1px solid var(--el-border-color-lighter);
-  transition: all 0.3s ease;
+  transition: all var(--duration-base) var(--ease-out);
 }
 
 .channel-card:hover {
   transform: translateY(-2px);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+  box-shadow: var(--shadow-lg);
 }
 
 .channel-card.channel-disabled {
@@ -1223,19 +1192,19 @@ onMounted(() => {
 .channel-card-header {
   display: flex;
   align-items: center;
-  gap: 12px;
-  padding-bottom: 12px;
-  border-bottom: 1px solid var(--el-border-color-lighter);
+  gap: var(--space-3);
+  padding-bottom: var(--space-3);
+  border-bottom: 1px solid var(--color-border-subtle);
 }
 
 .channel-type-badge {
   width: 44px;
   height: 44px;
-  border-radius: 10px;
+  border-radius: var(--radius-md);
   display: flex;
   align-items: center;
   justify-content: center;
-  color: white;
+  color: var(--color-text-inverse);
   flex-shrink: 0;
 }
 
@@ -1266,89 +1235,89 @@ onMounted(() => {
 
 .channel-name {
   margin: 0;
-  font-size: 15px;
-  font-weight: 600;
-  color: var(--el-text-color-primary);
+  font-size: var(--text-md);
+  font-weight: var(--weight-semibold);
+  color: var(--color-text-primary);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
 .channel-type-label {
-  font-size: 12px;
-  color: var(--el-text-color-secondary);
+  font-size: var(--text-xs);
+  color: var(--color-text-tertiary);
 }
 
 .channel-card-body {
-  padding: 12px 0;
+  padding: var(--space-3) 0;
 }
 
 .channel-meta {
   display: flex;
-  gap: 16px;
+  gap: var(--space-4);
 }
 
 .meta-item {
   display: flex;
   align-items: center;
-  gap: 4px;
-  font-size: 12px;
-  color: var(--el-text-color-secondary);
+  gap: var(--space-1);
+  font-size: var(--text-xs);
+  color: var(--color-text-tertiary);
 }
 
 .channel-card-actions {
   display: flex;
   flex-wrap: wrap;
-  gap: 4px;
-  padding-top: 12px;
-  border-top: 1px solid var(--el-border-color-lighter);
+  gap: var(--space-1);
+  padding-top: var(--space-3);
+  border-top: 1px solid var(--color-border-subtle);
 }
 
 .channel-card-actions .el-button {
-  padding: 6px 12px;
+  padding: var(--space-1) var(--space-3);
 }
 
 .channel-type-selector-wrapper {
-  padding: 8px 0;
+  padding: var(--space-2) 0;
 }
 
 .selector-title {
-  margin: 0 0 16px;
-  font-size: 14px;
-  color: var(--el-text-color-secondary);
+  margin: 0 0 var(--space-4);
+  font-size: var(--text-base);
+  color: var(--color-text-secondary);
 }
 
 .channel-type-selector {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: var(--space-3);
 }
 
 .channel-type-card {
   display: flex;
   align-items: center;
-  gap: 16px;
-  padding: 16px;
-  border-radius: 12px;
-  border: 2px solid var(--el-border-color-lighter);
+  gap: var(--space-4);
+  padding: var(--space-4);
+  border-radius: var(--radius-lg);
+  border: 2px solid var(--color-border-subtle);
   cursor: pointer;
-  transition: all 0.3s ease;
-  background: var(--el-bg-color);
+  transition: all var(--duration-base) var(--ease-out);
+  background: var(--color-bg-elevated);
 }
 
 .channel-type-card:hover {
-  border-color: var(--el-color-primary-light-5);
-  background: var(--el-fill-color-light);
+  border-color: var(--brand-200);
+  background: var(--color-bg-muted);
 }
 
 .channel-type-card .channel-type-icon {
   width: 48px;
   height: 48px;
-  border-radius: 10px;
+  border-radius: var(--radius-md);
   display: flex;
   align-items: center;
   justify-content: center;
-  color: white;
+  color: var(--color-text-inverse);
   flex-shrink: 0;
 }
 
@@ -1377,23 +1346,23 @@ onMounted(() => {
 }
 
 .channel-type-card .channel-type-name {
-  font-size: 15px;
-  font-weight: 600;
-  color: var(--el-text-color-primary);
-  margin-bottom: 4px;
+  font-size: var(--text-md);
+  font-weight: var(--weight-semibold);
+  color: var(--color-text-primary);
+  margin-bottom: var(--space-1);
 }
 
 .channel-type-card .channel-type-desc {
-  font-size: 12px;
-  color: var(--el-text-color-secondary);
+  font-size: var(--text-xs);
+  color: var(--color-text-tertiary);
 }
 
 @media (max-width: 768px) {
   .page-header {
-    padding: 12px 16px;
+    padding: var(--space-3) var(--space-4);
     flex-direction: row;
     justify-content: center;
-    gap: 12px;
+    gap: var(--space-3);
   }
 
   .header-content {
@@ -1403,11 +1372,11 @@ onMounted(() => {
   .header-actions {
     display: flex;
     justify-content: center;
-    gap: 12px;
+    gap: var(--space-3);
   }
 
   .header-actions .el-button {
-    padding: 8px 12px;
+    padding: var(--space-2) var(--space-3);
   }
 
   .header-actions .btn-text {
@@ -1415,7 +1384,7 @@ onMounted(() => {
   }
 
   .notification-channels-container {
-    padding: 12px;
+    padding: var(--space-3);
   }
 
   .channels-grid {
@@ -1438,15 +1407,15 @@ onMounted(() => {
 
 @media (max-width: 480px) {
   .page-header {
-    padding: 10px 12px;
+    padding: var(--space-3);
   }
 
   .header-actions {
-    gap: 8px;
+    gap: var(--space-2);
   }
 
   .header-actions .el-button {
-    padding: 8px;
+    padding: var(--space-2);
   }
 
   .channel-type-badge {
@@ -1455,7 +1424,7 @@ onMounted(() => {
   }
 
   .channel-name {
-    font-size: 14px;
+    font-size: var(--text-base);
   }
 }
 </style>

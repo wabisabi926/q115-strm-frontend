@@ -4,11 +4,13 @@
       新创建的机器人，请先给机器人发送一条消息激活机器人
     </el-alert>
     <div class="main-content-container telegram-settings-container">
+      <PageHeader title="Telegram 通知设置" subtitle="配置 Telegram 机器人以接收系统通知" :icon="Message" />
+
       <el-form
         :model="formData"
         :label-position="checkIsMobile ? 'top' : 'left'"
         :label-width="100"
-        class="telegram-form"
+        class="telegram-form settings-form"
       >
         <el-form-item label="启用" prop="enabled">
           <div class="enable-switch">
@@ -69,7 +71,6 @@
         </el-form-item>
       </el-form>
     </div>
-    <!-- 测试状态显示 -->
     <el-alert
       v-if="testStatus"
       :title="testStatus.title"
@@ -85,6 +86,7 @@
 <script setup lang="ts">
 import { reactive, ref, onMounted, inject } from 'vue'
 import { ElMessage } from 'element-plus'
+import PageHeader from '@/components/common/PageHeader.vue'
 import { Message, Check } from '@element-plus/icons-vue'
 import { SERVER_URL } from '@/const'
 import type { AxiosStatic } from 'axios'
@@ -113,7 +115,6 @@ const formData = reactive<TelegramSettings>({
   telegram_user_id: '',
 })
 
-// 测试机器人
 const testBot = async () => {
   if (!formData.enabled) {
     ElMessage.warning('请先启用Telegram通知功能')
@@ -169,7 +170,6 @@ const testBot = async () => {
   }
 }
 
-// 保存设置
 const saveSettings = async () => {
   try {
     loading.value = true
@@ -208,7 +208,6 @@ const saveSettings = async () => {
   }
 }
 
-// 加载设置
 const loadSettings = async () => {
   try {
     loading.value = true
@@ -232,3 +231,19 @@ onMounted(() => {
   loadSettings()
 })
 </script>
+
+<style scoped lang="css">
+.telegram-settings-container {
+  max-width: 800px;
+}
+
+.form-actions {
+  display: flex;
+  gap: var(--space-3);
+  margin-top: var(--space-6);
+}
+
+.test-status {
+  margin-top: var(--space-5);
+}
+</style>

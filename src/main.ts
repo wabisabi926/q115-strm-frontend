@@ -12,6 +12,7 @@ import App from './App.vue'
 
 import router from './router/index'
 import { useAuthStore } from '@/stores/auth'
+import { cnEnSpacing } from '@/utils/textSpacing'
 
 // 配置axios
 axios.defaults.timeout = 10000
@@ -80,6 +81,8 @@ for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
 }
 
 app.use(ElementPlus)
+
+app.directive('cn-en-spacing', cnEnSpacing)
 
 // 初始化认证状态
 const authStore = useAuthStore()

@@ -1,130 +1,130 @@
 <template>
-  <div class="main-content-container api-keys-container">
-    <el-alert type="info" :closable="false" show-icon>
-      <template #title>
-        API Key 认证已启用，可通过在请求中追加 api_key 使用所有需要认证的接口。
-      </template>
-      <p class="alert-tip">完整密钥仅在创建时显示一次，请妥善保存。</p>
-    </el-alert>
+  <div class="main-content-container">
+    <PageHeader title="API Key 管理" subtitle="管理 API 密钥用于外部访问" :icon="Lock" :icon-size="24" />
 
-    <div class="action-bar">
-      <el-button type="primary" :icon="Plus" @click="openCreateDialog"> 生成 API Key </el-button>
-      <el-button :icon="Refresh" @click="loadKeys" :loading="loading"> 刷新 </el-button>
+    <div class="page-content">
+      <el-alert type="info" :closable="false" show-icon>
+        <template #title>
+          API Key 认证已启用，可通过在请求中追加 api_key 使用所有需要认证的接口。
+        </template>
+        <p class="alert-tip">完整密钥仅在创建时显示一次，请妥善保存。</p>
+      </el-alert>
+
+      <el-table
+        :data="apiKeys"
+        v-loading="loading"
+        border
+        stripe
+        class="keys-table"
+        empty-text="暂无 API Key"
+      >
+        <el-table-column prop="name" label="名称" min-width="80" />
+        <el-table-column prop="key_prefix" label="Key 前缀" width="160">
+          <template #default="{ row }">
+            <el-tag type="info">{{ row.key_prefix }}</el-tag>
+          </template>
+        </el-table-column>
+        <el-table-column prop="is_active" label="状态" width="200">
+          <template #default="{ row }">
+            <el-switch
+              v-model="row.is_active"
+              :loading="row._updating"
+              active-text="启用"
+              inactive-text="停用"
+              @change="toggleStatus(row)"
+            />
+          </template>
+        </el-table-column>
+        <el-table-column label="最后使用" min-width="200">
+          <template #default="{ row }">
+            {{ formatDateSafe(row.last_used_at) }}
+          </template>
+        </el-table-column>
+        <el-table-column label="创建时间" min-width="200">
+          <template #default="{ row }">
+            {{ formatDateSafe(row.created_at) }}
+          </template>
+        </el-table-column>
+        <el-table-column label="操作" width="140" fixed="right">
+          <template #default="{ row }">
+            <el-button type="danger" size="small" :icon="Delete" @click="confirmDelete(row)">
+              删除
+            </el-button>
+          </template>
+        </el-table-column>
+      </el-table>
     </div>
 
-    <el-table
-      :data="apiKeys"
-      v-loading="loading"
-      border
-      stripe
-      style="width: 100%"
-      empty-text="暂无 API Key"
+    <el-dialog
+      v-model="createDialogVisible"
+      title="生成 API Key"
+      :width="isMobileView ? '90%' : '480px'"
+      :close-on-click-modal="false"
     >
-      <el-table-column prop="name" label="名称" min-width="80" />
-      <el-table-column prop="key_prefix" label="Key 前缀" width="160">
-        <template #default="{ row }">
-          <el-tag type="info">{{ row.key_prefix }}</el-tag>
-        </template>
-      </el-table-column>
-      <el-table-column prop="is_active" label="状态" width="200">
-        <template #default="{ row }">
-          <el-switch
-            v-model="row.is_active"
-            :loading="row._updating"
-            active-text="启用"
-            inactive-text="停用"
-            @change="toggleStatus(row)"
+      <el-form
+        :model="createForm"
+        :label-position="isMobileView ? 'top' : 'left'"
+        label-width="100px"
+      >
+        <el-form-item label="名称" required>
+          <el-input
+            v-model="createForm.name"
+            placeholder="用于区分用途的名称，例如: CI 脚本"
+            maxlength="60"
+            show-word-limit
           />
-        </template>
-      </el-table-column>
-      <el-table-column label="最后使用" min-width="200">
-        <template #default="{ row }">
-          {{ formatDateSafe(row.last_used_at) }}
-        </template>
-      </el-table-column>
-      <el-table-column label="创建时间" min-width="200">
-        <template #default="{ row }">
-          {{ formatDateSafe(row.created_at) }}
-        </template>
-      </el-table-column>
-      <el-table-column label="操作" width="140" fixed="right">
-        <template #default="{ row }">
-          <el-button type="danger" size="small" :icon="Delete" @click="confirmDelete(row)">
-            删除
-          </el-button>
-        </template>
-      </el-table-column>
-    </el-table>
-  </div>
+        </el-form-item>
+      </el-form>
 
-  <el-dialog
-    v-model="createDialogVisible"
-    title="生成 API Key"
-    :width="isMobileView ? '90%' : '480px'"
-    :close-on-click-modal="false"
-  >
-    <el-form
-      :model="createForm"
-      :label-position="isMobileView ? 'top' : 'left'"
-      label-width="100px"
+      <template #footer>
+        <el-button @click="createDialogVisible = false">取消</el-button>
+        <el-button type="primary" :loading="creating" @click="createKey">生成</el-button>
+      </template>
+    </el-dialog>
+
+    <el-dialog
+      v-model="createdKeyDialogVisible"
+      title="请立即保存新密钥"
+      :width="isMobileView ? '90%' : '520px'"
+      :close-on-click-modal="false"
+      :close-on-press-escape="false"
     >
-      <el-form-item label="名称" required>
-        <el-input
-          v-model="createForm.name"
-          placeholder="用于区分用途的名称，例如: CI 脚本"
-          maxlength="60"
-          show-word-limit
-        />
-      </el-form-item>
-    </el-form>
+      <el-alert type="warning" show-icon :closable="false" class="created-warning">
+        <template #title>只会显示一次，关闭后无法再次查看完整密钥。</template>
+        <p class="alert-tip">
+          调用接口时在 URL 追加 api_key 参数即可使用，例如 /api/user/info?api_key=...
+        </p>
+      </el-alert>
 
-    <template #footer>
-      <el-button @click="createDialogVisible = false">取消</el-button>
-      <el-button type="primary" :loading="creating" @click="createKey"> 生成 </el-button>
-    </template>
-  </el-dialog>
-
-  <el-dialog
-    v-model="createdKeyDialogVisible"
-    title="请立即保存新密钥"
-    :width="isMobileView ? '90%' : '520px'"
-    :close-on-click-modal="false"
-    :close-on-press-escape="false"
-  >
-    <el-alert type="warning" show-icon :closable="false" class="created-warning">
-      <template #title> 只会显示一次，关闭后无法再次查看完整密钥。 </template>
-      <p class="alert-tip">
-        调用接口时在 URL 追加 api_key 参数即可使用，例如 /api/user/info?api_key=...
-      </p>
-    </el-alert>
-
-    <div class="created-key-box" v-if="createdKey">
-      <div class="key-row">
-        <span class="key-label">完整密钥</span>
-        <div class="key-value">
-          <el-input v-model="createdKey.key" readonly />
-          <el-button type="primary" plain :icon="CopyDocument" @click="copyContent(createdKey.key)">
-            复制
-          </el-button>
+      <div class="created-key-box" v-if="createdKey">
+        <div class="key-row">
+          <span class="key-label">完整密钥</span>
+          <div class="key-value">
+            <el-input v-model="createdKey.key" readonly />
+            <el-button type="primary" plain :icon="CopyDocument" @click="copyContent(createdKey.key)">
+              复制
+            </el-button>
+          </div>
+        </div>
+        <div class="key-meta">
+          <span>名称：{{ createdKey.name }}</span>
+          <span>前缀：{{ createdKey.key_prefix }}</span>
+          <span>创建时间：{{ formatDateTime(createdKey.created_at) }}</span>
         </div>
       </div>
-      <div class="key-meta">
-        <span>名称：{{ createdKey.name }}</span>
-        <span>前缀：{{ createdKey.key_prefix }}</span>
-        <span>创建时间：{{ formatDateTime(createdKey.created_at) }}</span>
-      </div>
-    </div>
 
-    <template #footer>
-      <el-button type="primary" @click="createdKeyDialogVisible = false"> 我已妥善保存 </el-button>
-    </template>
-  </el-dialog>
+      <template #footer>
+        <el-button type="primary" @click="createdKeyDialogVisible = false">我已妥善保存</el-button>
+      </template>
+    </el-dialog>
+  </div>
 </template>
 
 <script setup lang="ts">
 import { inject, onMounted, reactive, ref } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
-import { Plus, Refresh, Delete, CopyDocument } from '@element-plus/icons-vue'
+import PageHeader from '@/components/common/PageHeader.vue'
+import { Plus, Refresh, Delete, CopyDocument, Lock } from '@element-plus/icons-vue'
 import type { AxiosStatic } from 'axios'
 import { SERVER_URL } from '@/const'
 import { formatDateTime } from '@/utils/timeUtils'
@@ -224,7 +224,6 @@ const toggleStatus = async (row: ApiKeyItem) => {
 
     if (response?.data.code === 200) {
       ElMessage.success(row.is_active ? '已启用' : '已禁用')
-      // 刷新时间等可能变化
       loadKeys()
     } else {
       row.is_active = original
@@ -283,57 +282,66 @@ onMounted(() => {
 </script>
 
 <style scoped>
-.api-keys-container {
+.page-content {
   display: flex;
   flex-direction: column;
-  gap: 16px;
-  padding: 0 10px 10px 10px;
+  gap: var(--space-4);
+  padding: 0 var(--space-3) var(--space-3);
 }
 
-.action-bar {
-  display: flex;
-  gap: 10px;
-  flex-wrap: wrap;
+.keys-table {
+  width: 100%;
 }
 
 .alert-tip {
-  margin: 4px 0 0;
-  color: #606266;
-  font-size: 13px;
+  margin: var(--space-1) 0 0;
+  color: var(--color-text-secondary);
+  font-size: var(--text-base);
 }
 
 .created-warning {
-  margin-bottom: 12px;
+  margin-bottom: var(--space-3);
 }
 
 .created-key-box {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: var(--space-3);
 }
 
 .key-row {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: var(--space-2);
 }
 
 .key-label {
-  font-weight: 600;
-  color: #303133;
+  font-weight: var(--weight-semibold);
+  color: var(--color-text-primary);
 }
 
 .key-value {
   display: flex;
-  gap: 10px;
+  gap: var(--space-3);
   align-items: center;
 }
 
 .key-meta {
   display: flex;
-  gap: 16px;
+  gap: var(--space-4);
   flex-wrap: wrap;
-  color: #606266;
-  font-size: 13px;
+  color: var(--color-text-secondary);
+  font-size: var(--text-base);
+}
+
+@media (max-width: 768px) {
+  .page-content {
+    padding: 0;
+  }
+
+  .key-value {
+    flex-direction: column;
+    align-items: stretch;
+  }
 }
 </style>

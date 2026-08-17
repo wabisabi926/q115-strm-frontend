@@ -3,6 +3,8 @@ import { ref, inject } from 'vue'
 import { ElMessage } from 'element-plus'
 import { SERVER_URL } from '@/const'
 import type { AxiosStatic } from 'axios'
+import { Tools } from '@element-plus/icons-vue'
+import PageHeader from '@/components/common/PageHeader.vue'
 
 const http: AxiosStatic | undefined = inject('$http')
 const loading = ref(false)
@@ -26,12 +28,8 @@ const repairDatabase = async () => {
 </script>
 
 <template>
-  <div class="database-repair-container">
-    <div class="page-header">
-      <div class="header-content">
-        <p>修复数据库表缺失问题</p>
-      </div>
-    </div>
+  <div class="main-content-container database-repair-container">
+    <PageHeader title="数据库修复" subtitle="重建缺失的数据库表结构" :icon="Tools" />
 
     <div class="section-card">
       <div class="section-header">
@@ -62,28 +60,6 @@ const repairDatabase = async () => {
   flex-direction: column;
   gap: 24px;
   padding: 0;
-}
-
-.page-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 20px 24px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  border-radius: 16px;
-  color: white;
-}
-
-.header-content h1 {
-  margin: 0 0 4px 0;
-  font-size: 28px;
-  font-weight: 700;
-}
-
-.header-content p {
-  margin: 0;
-  font-size: 14px;
-  opacity: 0.9;
 }
 
 .section-card {

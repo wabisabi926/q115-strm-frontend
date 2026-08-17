@@ -1,63 +1,66 @@
 <template>
-  <div class="backup-settings-container">
-    <div class="page-header">
-      <el-icon>
-        <Setting />
-      </el-icon>
-      <span>备份配置</span>
-    </div>
+  <div class="main-content-container">
+    <PageHeader title="备份设置" subtitle="配置数据库自动备份策略" :icon="Setting" :icon-size="24" />
 
-    <el-form
-      ref="configFormRef"
-      :model="configForm"
-      label-width="120px"
-      :label-position="isMobile ? 'top' : 'right'"
-    >
-      <el-form-item label="启用自动备份">
-        <el-switch v-model="configForm.backup_enabled" :active-value="1" :inactive-value="0" />
-      </el-form-item>
+    <div class="page-content">
+      <el-form
+        ref="configFormRef"
+        :model="configForm"
+        label-width="120px"
+        :label-position="isMobile ? 'top' : 'right'"
+        class="settings-form"
+      >
+        <el-form-item label="启用自动备份">
+          <el-switch v-model="configForm.backup_enabled" :active-value="1" :inactive-value="0" />
+        </el-form-item>
 
-      <el-form-item label="定时策略" required>
-        <cron-selector v-model="configForm.backup_cron" />
-        <div v-if="cronTimes.length > 0" class="cron-next-times">
-          <p><strong>下5次执行时间：</strong></p>
-          <div v-loading="cronTimesLoading" class="cron-times-list">
-            <div v-for="(time, index) in cronTimes" :key="index" class="cron-time-item">
-              <el-tag type="info" size="small">{{ time }}</el-tag>
+        <el-form-item label="定时策略" required>
+          <cron-selector v-model="configForm.backup_cron" />
+          <div v-if="cronTimes.length > 0" class="cron-next-times">
+            <p><strong>下5次执行时间：</strong></p>
+            <div v-loading="cronTimesLoading" class="cron-times-list">
+              <div v-for="(time, index) in cronTimes" :key="index" class="cron-time-item">
+                <el-tag type="info" size="small">{{ time }}</el-tag>
+              </div>
             </div>
           </div>
-        </div>
-      </el-form-item>
+        </el-form-item>
 
-      <el-form-item label="保留天数" required>
-        <el-input-number
-          v-model="configForm.backup_retention"
-          :min="1"
-          :max="365"
-          controls-position="right"
-        />
-        <span style="margin-left: 8px; color: #909399">天</span>
-      </el-form-item>
+        <el-form-item label="保留天数" required>
+          <el-input-number
+            v-model="configForm.backup_retention"
+            :min="1"
+            :max="365"
+            controls-position="right"
+          />
+          <span class="unit-label">天</span>
+        </el-form-item>
 
-      <el-form-item label="最大备份数" required>
-        <el-input-number
-          v-model="configForm.backup_max_count"
-          :min="1"
-          :max="100"
-          controls-position="right"
-        />
-        <span style="margin-left: 8px; color: #909399">个</span>
-      </el-form-item>
+        <el-form-item label="最大备份数" required>
+          <el-input-number
+            v-model="configForm.backup_max_count"
+            :min="1"
+            :max="100"
+            controls-position="right"
+          />
+          <span class="unit-label">个</span>
+        </el-form-item>
 
-      <el-form-item>
-        <el-button type="primary" :loading="configSaving" @click="saveConfig"> 保存配置 </el-button>
-      </el-form-item>
-    </el-form>
+        <el-form-item>
+          <div class="form-actions">
+            <el-button type="primary" :loading="configSaving" @click="saveConfig">
+              保存配置
+            </el-button>
+          </div>
+        </el-form-item>
+      </el-form>
+    </div>
   </div>
 </template>
 
 <script setup lang="ts">
 import { ref, reactive, onMounted, inject, watch } from 'vue'
+import PageHeader from '@/components/common/PageHeader.vue'
 import { Setting } from '@element-plus/icons-vue'
 import { ElMessage } from 'element-plus'
 import type { AxiosStatic } from 'axios'
@@ -170,47 +173,41 @@ onMounted(() => {
 </script>
 
 <style scoped>
-.backup-settings-container {
-  padding: 20px;
-  max-width: 1200px;
-}
-
-.page-header {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-weight: 600;
-  font-size: 18px;
-  margin-bottom: 20px;
-  padding-bottom: 12px;
-  border-bottom: 1px solid #e4e7ed;
+.page-content {
+  padding: 0 var(--space-3) var(--space-3);
 }
 
 .cron-next-times {
-  margin-top: 12px;
-  padding: 12px;
-  background-color: #f5f7fa;
-  border-radius: 4px;
+  margin-top: var(--space-3);
+  padding: var(--space-3);
+  background-color: var(--color-bg-muted);
+  border-radius: var(--radius-sm);
 }
 
 .cron-next-times p {
-  margin: 0 0 8px 0;
-  color: #606266;
+  margin: 0 0 var(--space-2);
+  color: var(--color-text-secondary);
 }
 
 .cron-times-list {
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
+  gap: var(--space-2);
 }
 
 .cron-time-item {
   display: inline-flex;
 }
 
+.unit-label {
+  margin-left: var(--space-2);
+  color: var(--color-text-tertiary);
+  font-size: var(--text-sm);
+}
+
 @media (max-width: 768px) {
-  .backup-settings-container {
-    padding: 10px;
+  .page-content {
+    padding: 0;
   }
 }
 </style>

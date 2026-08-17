@@ -1,15 +1,15 @@
 <template>
-  <!-- STRM设置卡片 -->
   <div class="main-content-container strm-content">
+    <PageHeader title="STRM 设置" subtitle="配置 STRM 文件生成与同步规则" :icon="FolderOpened" />
+
     <el-form
       :model="strmData"
       :rules="formRules"
       :label-position="checkIsMobile ? 'top' : 'left'"
       :label-width="180"
-      class="strm-form"
+      class="strm-form settings-form"
       ref="formRef"
     >
-      <!-- 排除的名称 -->
       <el-form-item label="排除的名称" prop="exclude_name_arr">
         <MetadataExtInput
           v-model="strmData.exclude_name_arr"
@@ -22,7 +22,7 @@
           <p>被排除的文件或目录将不会同步，其下的所有内容也都不会同步</p>
         </div>
       </el-form-item>
-      <!-- 视频文件扩展名 -->
+
       <el-form-item label="视频文件扩展名" prop="video_ext_arr">
         <MetadataExtInput
           v-model="strmData.video_ext_arr"
@@ -34,7 +34,6 @@
         </div>
       </el-form-item>
 
-      <!-- 最小文件大小 -->
       <el-form-item label="最小文件大小 (MB)" prop="min_video_size">
         <el-input-number
           v-model="strmData.min_video_size"
@@ -50,7 +49,6 @@
         </div>
       </el-form-item>
 
-      <!-- 元数据扩展名 -->
       <el-form-item label="元数据扩展名" prop="meta_ext_arr">
         <MetadataExtInput
           v-model="strmData.meta_ext_arr"
@@ -62,7 +60,6 @@
         </div>
       </el-form-item>
 
-      <!-- 定时同步表达式 -->
       <el-form-item label="定时同步表达式" prop="cron">
         <el-input
           v-model="strmData.cron"
@@ -80,7 +77,6 @@
             <li><code>0 0 * * 0</code> - 每周日0点执行</li>
           </ul>
 
-          <!-- 下次执行时间显示 -->
           <div v-if="cronTimes.length > 0" class="cron-next-times">
             <p><strong>下5次执行时间：</strong></p>
             <div v-loading="cronTimesLoading" class="cron-times-list">
@@ -92,7 +88,6 @@
         </div>
       </el-form-item>
 
-      <!-- STRM直连地址 -->
       <el-form-item label="STRM直连地址" prop="direct_url">
         <el-input
           v-model="strmData.strm_base_url"
@@ -126,15 +121,14 @@
         </div>
       </el-form-item>
 
-      <!-- 同步完是否上传网盘不存在的元数据 -->
       <el-form-item label="网盘不存在的元数据" prop="upload_meta">
         <el-radio-group v-model="strmData.upload_meta">
-          <el-radio-button :label="2" :disabled="strmData.download_meta === 0"
-            >删除</el-radio-button
-          >
-          <el-radio-button :label="1" :disabled="strmData.download_meta === 0"
-            >上传</el-radio-button
-          >
+          <el-radio-button :label="2" :disabled="strmData.download_meta === 0">
+            删除
+          </el-radio-button>
+          <el-radio-button :label="1" :disabled="strmData.download_meta === 0">
+            上传
+          </el-radio-button>
           <el-radio-button :label="0">保留</el-radio-button>
         </el-radio-group>
         <div class="form-help">
@@ -151,6 +145,7 @@
           <p>保留：不会删除本地文件，不管网盘有没有删除它</p>
         </div>
       </el-form-item>
+
       <el-form-item label="是否检查元数据修改时间" prop="check_meta_mtime">
         <el-radio-group v-model="strmData.check_meta_mtime">
           <el-radio-button :label="1">是</el-radio-button>
@@ -164,7 +159,7 @@
           </p>
         </div>
       </el-form-item>
-      <!-- 同步完是否删除网盘不存在的空目录 -->
+
       <el-form-item label="网盘不存在的空目录" prop="delete_dir">
         <el-radio-group v-model="strmData.delete_dir">
           <el-radio-button :label="1">删除</el-radio-button>
@@ -204,7 +199,7 @@
           </p>
         </div>
       </el-form-item>
-      <!-- 保存和重置按钮 -->
+
       <div class="strm-actions">
         <el-button
           type="success"
@@ -218,7 +213,6 @@
       </div>
     </el-form>
 
-    <!-- STRM配置状态显示 -->
     <el-alert
       v-if="strmStatus"
       :title="strmStatus.title"
@@ -234,7 +228,8 @@
 <script setup lang="ts">
 import { SERVER_URL } from '@/const'
 import type { AxiosStatic } from 'axios'
-import { Check } from '@element-plus/icons-vue'
+import PageHeader from '@/components/common/PageHeader.vue'
+import { Check, FolderOpened } from '@element-plus/icons-vue'
 import { inject, onMounted, reactive, ref, watch } from 'vue'
 import type { FormInstance, FormRules } from 'element-plus'
 import { isMobile } from '@/utils/deviceUtils'
@@ -262,37 +257,32 @@ interface StrmStatus {
 const checkIsMobile = ref(isMobile())
 const http: AxiosStatic | undefined = inject('$http')
 
-// 表单引用
 const formRef = ref<FormInstance>()
 
-// STRM配置相关状态
 const strmLoading = ref(false)
 const strmStatus = ref<StrmStatus | null>(null)
 const strmExample = ref('')
 
-// Cron下次执行时间相关状态
 const cronTimes = ref<string[]>([])
 const cronTimesLoading = ref(false)
 
-// 默认STRM配置
 const defaultStrmData: StrmData = {
   video_ext_arr: ['.mp4', '.mkv', '.avi', '.mov', '.wmv', '.flv', '.webm', '.m4v', '.3gp', '.ts'],
-  min_video_size: 50, // 默认50MB
+  min_video_size: 50,
   meta_ext_arr: ['.jpg', '.jpeg', '.png', '.webp', '.nfo', '.srt', '.ass', '.svg', '.sup', '.lrc'],
   cron: '30 * * * *',
   strm_base_url: '',
-  upload_meta: 0, // 默认保留
-  download_meta: 1, // 默认不下载元数据
-  delete_dir: 0, // 默认不删除
-  local_proxy: 0, // 是否启用本地代理
-  exclude_name_arr: [], // 排除的名称列表，默认为空
-  add_path: 2, // 默认不添加路径
-  check_meta_mtime: 0, // 检查元数据的修改时间
+  upload_meta: 0,
+  download_meta: 1,
+  delete_dir: 0,
+  local_proxy: 0,
+  exclude_name_arr: [],
+  add_path: 2,
+  check_meta_mtime: 0,
 }
 
 const strmData = reactive<StrmData>({ ...defaultStrmData })
 
-// 表单验证规则
 const formRules: FormRules = {
   video_ext_arr: [
     {
@@ -344,11 +334,9 @@ const formRules: FormRules = {
   ],
 }
 
-// 更新STRM示例
 const updateStrmExample = () => {
   if (strmData.strm_base_url) {
-    // 生成示例STRM文件内容
-    const baseUrl = strmData.strm_base_url.replace(/\/$/, '') // 移除末尾斜杠
+    const baseUrl = strmData.strm_base_url.replace(/\/$/, '')
     strmExample.value = `${baseUrl}/115/video.mp4?pick_code=d6tkyd62bmngxx5bg&userid=5323423`
     if (strmData.add_path == 1) {
       strmExample.value += '&path=Media%2F电影%2F华语电影%2F让子弹飞%2F让子弹飞.mp4'
@@ -358,9 +346,7 @@ const updateStrmExample = () => {
   }
 }
 
-// 保存STRM配置
 const saveStrmConfig = async () => {
-  // 验证表单
   if (!formRef.value) return
 
   try {
@@ -405,7 +391,6 @@ const saveStrmConfig = async () => {
   }
 }
 
-// 加载STRM配置
 const loadStrmConfig = async () => {
   try {
     const response = await http?.get(`${SERVER_URL}/setting/strm-config`)
@@ -425,10 +410,7 @@ const loadStrmConfig = async () => {
       strmData.add_path = config.add_path
       strmData.check_meta_mtime = config.check_meta_mtime
 
-      // 更新示例
       updateStrmExample()
-
-      // 加载Cron执行时间
       await loadCronTimes()
     }
   } catch (error) {
@@ -436,7 +418,6 @@ const loadStrmConfig = async () => {
   }
 }
 
-// 查询Cron下次执行时间
 const loadCronTimes = async () => {
   if (!strmData.cron) {
     cronTimes.value = []
@@ -469,7 +450,6 @@ const changeDownloadMeta = () => {
   }
 }
 
-// 监听cron表达式变化
 watch(
   () => strmData.cron,
   (newCron) => {
@@ -486,3 +466,82 @@ onMounted(() => {
   loadStrmConfig()
 })
 </script>
+
+<style scoped lang="css">
+.strm-content {
+  max-width: 900px;
+}
+
+.strm-actions {
+  display: flex;
+  justify-content: flex-start;
+  margin-top: var(--space-6);
+}
+
+.strm-status {
+  margin-top: var(--space-5);
+}
+
+.cron-examples {
+  padding-left: var(--space-5);
+  margin: var(--space-2) 0;
+  line-height: var(--leading-relaxed);
+}
+
+.cron-examples li {
+  margin: var(--space-1) 0;
+}
+
+.cron-examples code {
+  font-family: var(--font-family-mono);
+  background: var(--color-bg-muted);
+  padding: var(--space-1) var(--space-2);
+  border-radius: var(--radius-sm);
+  font-size: var(--text-xs);
+}
+
+.strm-example-inline {
+  margin-top: var(--space-2);
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.strm-example-inline .example-label {
+  font-size: var(--text-xs);
+  color: var(--color-text-secondary);
+  font-weight: var(--weight-medium);
+}
+
+.strm-example-inline .example-url {
+  font-family: var(--font-family-mono);
+  font-size: var(--text-sm);
+  background: var(--color-bg-muted);
+  padding: var(--space-1) var(--space-2);
+  border-radius: var(--radius-sm);
+  color: var(--brand-500);
+}
+
+.cron-next-times {
+  margin-top: var(--space-3);
+  padding: var(--space-3) var(--space-4);
+  background: var(--brand-50);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--brand-100);
+}
+
+.cron-next-times p {
+  margin: var(--space-1) 0;
+}
+
+.cron-times-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  margin-top: var(--space-2);
+}
+
+.cron-time-item {
+  font-family: var(--font-family-mono);
+}
+</style>

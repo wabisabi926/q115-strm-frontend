@@ -1,12 +1,14 @@
 <template>
-  <div class="main-content-container emby-content">
+  <div class="main-content-container emby-content" v-cn-en-spacing>
+    <PageHeader title="Emby 设置" subtitle="配置 Emby 服务器连接、通知与同步功能" :icon="Monitor" />
+
     <div class="emby-settings-wrapper">
       <el-form
         :model="embyData"
         :rules="formRules"
         :label-position="isMobile ? 'top' : 'left'"
         :label-width="200"
-        class="emby-form"
+        class="emby-form settings-form"
         ref="formRef"
       >
         <el-card class="settings-card emby-server-card" shadow="hover">
@@ -60,18 +62,32 @@
             />
             <div class="form-help">
               <el-icon><InfoFilled /></el-icon>
-              <span>API密钥用来提取strm的视频、音频、内封字幕信息，如果不需要该功能，可以不填</span>
-            </div>
-            <div class="form-help author-credit">
-              <span
-                >Strm信息提取功能由<a href="https://github.com/truewhile" target="_blank"
-                  >@truewhile</a
-                >
-                提供，感谢其无私的分享。</span
-              >
-            </div>
-          </el-form-item>
+              <span>API 密钥用来提取 strm 的视频、音频、内封字幕信息，如果不需要该功能，可以不填</span></div>
+            </el-form-item>
         </el-card>
+
+        <div class="form-actions-wrapper">
+          <el-button
+            type="primary"
+            @click="praseEmby"
+            :loading="embyLoading"
+            :icon="Refresh"
+            :disabled="!embyData.emby_url || !embyData.emby_api_key"
+            size="large"
+            class="extract-btn"
+          >
+            提取媒体信息
+          </el-button>
+          <div class="extract-help">
+            <p>
+              该功能会将Emby没有提取媒体信息的项目全部触发提取，如果是重建媒体库或者新Emby可以执行一次。进度或者详情请在<router-link
+                to="/download-queue"
+                class="help-link"
+                >下载队列页</router-link
+              >面查看
+            </p>
+          </div>
+        </div>
 
         <el-card class="settings-card webhook-card" shadow="hover">
           <template #header>
@@ -99,13 +115,7 @@
             </el-input>
             <div class="form-help">
               <el-icon><InfoFilled /></el-icon>
-              <span>将此链接配置到Emby的通知设置中，</span>
-              <a
-                href="https://github.com/wabisabi926/qmediasync/wiki/Emby-%E9%80%9A%E7%9F%A5%E9%85%8D%E7%BD%AE"
-                target="_blank"
-                class="help-link"
-                >配置教程</a
-              >
+              <span>将此链接配置到 Emby 的通知设置中，</span>
               <a
                 :href="embyData.emby_url + '/web/index.html#!/settings/notifications.html'"
                 target="_blank"
@@ -116,7 +126,7 @@
             <div class="form-help" v-if="embyData.enable_auth">
               <el-icon><WarningFilled /></el-icon>
               <span class="warning-text"
-                >已开启鉴权，请确保在Emby的通知链接中添加Api Key参数，示例：<code
+                >已开启鉴权，请确保在 Emby 的通知链接中添加 Api Key 参数，示例：<code
                   class="inline-code"
                   >{{ webhookUrl }}?api_key=你的ApiKey</code
                 ></span
@@ -141,11 +151,11 @@
             <div class="form-help">
               <el-icon><InfoFilled /></el-icon>
               <span
-                >启用后，Emby的Webhook请求需要携带Api
+                >启用后，Emby 的 Webhook 请求需要携带 Api
                 Key才能生效。如果要在外网使用Emby通知链接建议启用以提高安全性。请到<router-link
                   to="/settings/api-keys"
                   class="help-link"
-                  >Api Key模块</router-link
+                  >Api Key 模块</router-link
                 >生成</span
               >
             </div>
@@ -228,12 +238,6 @@
               <div class="config-links">
                 <span>该功能需要在Emby中配置通知才能生效，</span>
                 <a
-                  href="https://github.com/wabisabi926/qmediasync/wiki/Emby-%E9%80%9A%E7%9F%A5%E9%85%8D%E7%BD%AE"
-                  target="_blank"
-                  class="help-link"
-                  >配置教程</a
-                >
-                <a
                   :href="embyData.emby_url + '/web/index.html#!/settings/notifications.html'"
                   target="_blank"
                   class="help-link action-link"
@@ -271,7 +275,6 @@
             </div>
           </div>
 
-          <!-- 媒体库同步选择 - 只有启用同步时才显示 -->
           <div v-if="embyData.sync_enabled === 1" class="library-selection-section">
             <el-form-item label="同步模式">
               <el-radio-group v-model="embyData.sync_all_libraries" @change="handleSyncModeChange">
@@ -401,12 +404,6 @@
               <div class="config-links">
                 <span>该功能需要在Emby中配置通知才能生效，</span>
                 <a
-                  href="https://github.com/wabisabi926/qmediasync/wiki/Emby-%E9%80%9A%E7%9F%A5%E9%85%8D%E7%BD%AE"
-                  target="_blank"
-                  class="help-link"
-                  >配置教程</a
-                >
-                <a
                   :href="embyData.emby_url + '/web/index.html#!/settings/notifications.html'"
                   target="_blank"
                   class="help-link action-link"
@@ -425,28 +422,6 @@
           </div>
         </el-card>
 
-        <div class="form-actions-wrapper">
-          <el-button
-            type="primary"
-            @click="praseEmby"
-            :loading="embyLoading"
-            :icon="Refresh"
-            :disabled="!embyData.emby_url || !embyData.emby_api_key"
-            size="large"
-            class="extract-btn"
-          >
-            提取媒体信息
-          </el-button>
-          <div class="extract-help">
-            <p>
-              该功能会将Emby没有提取媒体信息的项目全部触发提取，如果是重建媒体库或者新Emby可以执行一次。进度或者详情请在<router-link
-                to="/download-queue"
-                class="help-link"
-                >下载队列页</router-link
-              >面查看
-            </p>
-          </div>
-        </div>
       </el-form>
 
       <el-card class="settings-card save-config-card" shadow="hover">
@@ -559,17 +534,20 @@
         class="emby-status-alert"
       />
 
-      <el-alert title="使用提示" type="info" :closable="false" show-icon class="tips-alert">
-        <template #default>
-          只要填写了Emby服务器地址和API密钥，就可以触发提取媒体信息，提取完成后Emby可以显示出来音视频和内封字幕信息，可以切换字幕<br />
-          如果需要同步，可以点击上方的 "提取媒体信息" 按钮
-        </template>
-      </el-alert>
+      <div class="form-help usage-tip">
+        <el-icon><InfoFilled /></el-icon>
+        <div class="usage-tip-content">
+          <p class="usage-tip-title">使用提示</p>
+          <p>只要填写了Emby服务器地址和API密钥，就可以触发提取媒体信息，提取完成后Emby可以显示出来音视频和内封字幕信息，可以切换字幕</p>
+          <p>如果需要同步，可以点击上方的 "提取媒体信息" 按钮</p>
+        </div>
+      </div>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
+import PageHeader from '@/components/common/PageHeader.vue'
 import { SERVER_URL } from '@/const'
 import type { AxiosStatic } from 'axios'
 import {
@@ -628,7 +606,6 @@ const embyData = reactive({
   enable_playback_progress: 0,
 })
 
-// 媒体库选择相关数据
 const availableLibraries = ref<Array<{ library_id: string; name: string }>>([])
 const selectedLibraryIds = ref<string[]>([])
 
@@ -700,14 +677,12 @@ const loadEmbyConfig = async () => {
         embyData.enable_playback_overview = config.enable_playback_overview ?? 0
         embyData.enable_playback_progress = config.enable_playback_progress ?? 0
 
-        // 解析选中的媒体库ID列表
         try {
           selectedLibraryIds.value = JSON.parse(embyData.selected_libraries)
         } catch (e) {
           selectedLibraryIds.value = []
         }
 
-        // 加载媒体库列表
         await loadEmbyLibraries()
       } else {
         Object.assign(embyData, defaultConfig)
@@ -725,11 +700,10 @@ const loadEmbyConfig = async () => {
   }
 }
 
-// 加载Emby媒体库列表
 const loadEmbyLibraries = async () => {
   try {
     const response = await http?.get(`${SERVER_URL}/emby/libraries`)
-    if (response?.data.code === 200 && response?.data.data) {
+    if (response?.data.code === 200 && response.data.data) {
       availableLibraries.value = response.data.data.map((lib: any) => ({
         library_id: lib.library_id,
         name: lib.name,
@@ -740,9 +714,7 @@ const loadEmbyLibraries = async () => {
   }
 }
 
-// 处理同步模式切换
 const handleSyncModeChange = (value: number) => {
-  // 当选择"指定媒体库"时，重新加载媒体库列表
   if (value === 0) {
     loadEmbyLibraries()
   }
@@ -999,27 +971,25 @@ onBeforeUnmount(() => {
 
 <style scoped lang="css">
 .emby-content {
-  /* padding: 20px; */
-  background: linear-gradient(135deg, #f5f7fa 0%, #e4e7ed 100%);
+  background: var(--gradient-card);
 }
 
 .emby-settings-wrapper {
-  /* max-width: 1400px; */
   margin: 0 auto;
 }
 
 .emby-form {
   display: flex;
   flex-direction: column;
-  gap: 20px;
-  margin-bottom: 24px;
+  gap: var(--space-5);
+  margin-bottom: var(--space-6);
 }
 
 .settings-card {
-  border-radius: 12px;
+  border-radius: var(--radius-lg);
   border: none;
   overflow: hidden;
-  transition: all 0.3s ease;
+  transition: all var(--duration-base) var(--ease-out);
   width: 100%;
 }
 
@@ -1028,48 +998,47 @@ onBeforeUnmount(() => {
 }
 
 .library-selection-section {
-  padding: 8px 0;
+  padding: var(--space-2) 0;
 }
 
 .save-config-card {
-  margin-top: 24px;
+  margin-top: var(--space-6);
 }
 
 .save-config-content {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  gap: 12px;
-  padding: 16px;
+  align-items: flex-start;
+  gap: var(--space-3);
+  padding: var(--space-4);
 }
 
 .save-config-content .save-btn {
-  width: 200px;
-  min-width: 200px;
+  min-width: 140px;
 }
 
 .save-config-help {
-  justify-content: center;
+  justify-content: flex-start;
 }
 
 .card-header-wrapper {
   display: flex;
   align-items: center;
-  gap: 16px;
+  gap: var(--space-4);
 }
 
 .card-header-icon {
   width: 48px;
   height: 48px;
-  border-radius: 12px;
+  border-radius: var(--radius-lg);
   display: flex;
   align-items: center;
   justify-content: center;
-  color: white;
+  color: var(--color-text-inverse);
 }
 
 .server-icon {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: var(--gradient-hero);
 }
 
 .webhook-icon {
@@ -1090,15 +1059,15 @@ onBeforeUnmount(() => {
 
 .card-title {
   margin: 0;
-  font-size: 18px;
-  font-weight: 600;
-  color: #303133;
+  font-size: var(--text-xl);
+  font-weight: var(--weight-semibold);
+  color: var(--color-text-primary);
 }
 
 .card-subtitle {
-  margin: 4px 0 0;
-  font-size: 13px;
-  color: #909399;
+  margin: var(--space-1) 0 0;
+  font-size: var(--text-sm);
+  color: var(--color-text-tertiary);
 }
 
 .card-header-action {
@@ -1110,44 +1079,49 @@ onBeforeUnmount(() => {
 }
 
 .webhook-input :deep(.el-input__wrapper) {
-  background-color: #f5f7fa;
+  background-color: var(--color-bg-muted);
 }
 
 .emby-example-inline {
-  margin-top: 10px;
-  padding: 12px 16px;
-  background: linear-gradient(135deg, #f5f7fa 0%, #e8eef5 100%);
-  border-radius: 8px;
+  margin-top: var(--space-3);
+  padding: var(--space-3) var(--space-4);
+  background: linear-gradient(135deg, var(--color-bg-muted) 0%, #e8eef5 100%);
+  border-radius: var(--radius-md);
   display: flex;
   align-items: center;
-  gap: 12px;
-  border: 1px solid #e4e7ed;
+  gap: var(--space-3);
+  border: 1px solid var(--neutral-200);
 }
 
 .example-label {
-  font-weight: 500;
-  color: #606266;
-  font-size: 13px;
+  font-weight: var(--weight-medium);
+  color: var(--color-text-secondary);
+  font-size: var(--text-sm);
 }
 
 .example-url {
-  color: #409eff;
-  font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
-  font-size: 13px;
-  background: white;
-  padding: 4px 8px;
-  border-radius: 4px;
-  border: 1px solid #d9ecff;
+  color: var(--brand-500);
+  font-family: var(--font-family-mono);
+  font-size: var(--text-sm);
+  background: var(--color-bg-elevated);
+  padding: var(--space-1) var(--space-2);
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--brand-100);
 }
 
 .form-help {
+  display: block;
+  font-size: var(--text-sm);
+  color: var(--color-text-secondary);
+  margin-top: var(--space-3);
+  line-height: var(--leading-normal);
+  width: 100%;
+}
+
+.form-help:has(.el-icon) {
   display: flex;
   align-items: flex-start;
-  gap: 6px;
-  font-size: 14px;
-  color: #3c3d40;
-  margin-top: 8px;
-  line-height: 1.5;
+  gap: var(--space-2);
 }
 
 .form-help .el-icon {
@@ -1156,69 +1130,69 @@ onBeforeUnmount(() => {
 }
 
 .author-credit {
-  margin-top: 4px;
+  margin-top: var(--space-1);
 }
 
 .help-link {
-  color: #409eff;
+  color: var(--brand-500);
   text-decoration: none;
-  font-weight: 500;
-  transition: color 0.2s;
+  font-weight: var(--weight-medium);
+  transition: color var(--duration-fast);
 }
 
 .help-link:hover {
-  color: #66b1ff;
+  color: var(--brand-600);
   text-decoration: underline;
 }
 
 .action-link {
-  margin-left: 8px;
-  padding: 2px 8px;
-  background: #ecf5ff;
-  border-radius: 4px;
-  font-size: 12px;
+  margin-left: var(--space-2);
+  padding: var(--space-1) var(--space-2);
+  background: var(--brand-50);
+  border-radius: var(--radius-sm);
+  font-size: var(--text-xs);
 }
 
 .action-link:hover {
-  background: #d9ecff;
+  background: var(--brand-100);
 }
 
 .inline-code {
-  background: #fef0f0;
-  padding: 2px 6px;
-  border-radius: 3px;
-  font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
-  font-size: 11px;
-  color: #f56c6c;
+  background: var(--danger-bg);
+  padding: var(--space-1) var(--space-2);
+  border-radius: var(--radius-xs);
+  font-family: var(--font-family-mono);
+  font-size: var(--text-2xs);
+  color: var(--danger);
 }
 
 .switch-wrapper {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: var(--space-3);
 }
 
 .switch-label {
-  font-size: 14px;
-  color: #909399;
-  font-weight: 500;
-  transition: color 0.3s;
+  font-size: var(--text-base);
+  color: var(--color-text-tertiary);
+  font-weight: var(--weight-medium);
+  transition: color var(--duration-base);
 }
 
 .switch-label.is-active {
-  color: #67c23a;
+  color: var(--success);
 }
 
 .switch-label.is-danger {
-  color: #f56c6c;
+  color: var(--danger);
 }
 
 .warning-text {
-  color: #e6a23c;
+  color: var(--warning);
 }
 
 .feature-item {
-  padding: 16px 0;
+  padding: var(--space-4) 0;
 }
 
 .feature-item:first-child {
@@ -1231,97 +1205,108 @@ onBeforeUnmount(() => {
 }
 
 .danger-item {
-  background: linear-gradient(135deg, #fef6f6 0%, #fff 100%);
-  margin: 0 -20px;
-  padding: 20px;
-  border-radius: 8px;
+  background: linear-gradient(135deg, var(--danger-bg) 0%, var(--color-bg-elevated) 100%);
+  margin: 0 calc(-1 * var(--space-5));
+  padding: var(--space-5);
+  border-radius: var(--radius-md);
   border: 1px solid #fde2e2;
 }
 
 .danger-alert {
-  margin-bottom: 12px;
-  border-radius: 8px;
+  margin-bottom: var(--space-3);
+  border-radius: var(--radius-md);
 }
 
 .feature-description {
-  font-size: 13px;
-  color: #606266;
-  line-height: 1.8;
-  margin-top: 8px;
+  font-size: var(--text-sm);
+  color: var(--color-text-secondary);
+  line-height: var(--leading-relaxed);
+  margin-top: var(--space-2);
 }
 
 .feature-description p {
-  margin: 6px 0;
+  margin: var(--space-2) 0;
 }
 
 .feature-note {
-  color: #909399;
+  color: var(--color-text-tertiary);
   font-style: italic;
 }
 
 .cron-next-times {
-  margin-top: 12px;
-  padding: 12px 16px;
-  background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
-  border-radius: 8px;
+  margin-top: var(--space-3);
+  padding: var(--space-3) var(--space-4);
+  background: linear-gradient(135deg, var(--brand-50) 0%, #e0f2fe 100%);
+  border-radius: var(--radius-md);
   border: 1px solid #bae6fd;
 }
 
 .cron-times-header {
   display: flex;
   align-items: center;
-  gap: 8px;
-  font-size: 13px;
-  font-weight: 500;
-  color: #0284c7;
-  margin-bottom: 8px;
+  gap: var(--space-2);
+  font-size: var(--text-sm);
+  font-weight: var(--weight-medium);
+  color: var(--brand-600);
+  margin-bottom: var(--space-2);
 }
 
 .cron-times-list {
   margin: 0;
-  padding-left: 20px;
+  padding-left: var(--space-5);
   list-style: decimal;
 }
 
 .cron-times-list li {
-  font-size: 13px;
-  color: #0369a1;
-  line-height: 1.8;
-  font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+  font-size: var(--text-sm);
+  color: var(--brand-700);
+  line-height: var(--leading-relaxed);
+  font-family: var(--font-family-mono);
 }
 
 .feature-divider {
-  margin: 16px 0;
+  margin: var(--space-4) 0;
 }
 
 .config-links {
   display: flex;
   align-items: center;
-  flex-wrap: wrap;
-  gap: 4px;
-  margin-bottom: 8px;
+  flex-wrap: nowrap;
+  gap: var(--space-1);
+  margin-bottom: var(--space-2);
+}
+
+.config-links span {
+  flex-shrink: 1;
+  min-width: 0;
+}
+
+.config-links .help-link {
+  flex-shrink: 0;
+  white-space: nowrap;
 }
 
 .delete-rules {
-  margin: 12px 0 0;
-  padding-left: 20px;
-  color: #909399;
+  margin: var(--space-3) 0 0;
+  padding-left: var(--space-5);
+  color: var(--color-text-tertiary);
 }
 
 .delete-rules li {
-  margin: 6px 0;
-  line-height: 1.6;
+  margin: var(--space-2) 0;
+  line-height: var(--leading-relaxed);
 }
 
 .form-actions-wrapper {
   display: flex;
   flex-wrap: wrap;
-  gap: 16px;
-  padding: 20px;
-  background: white;
-  border-radius: 12px;
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+  gap: var(--space-4);
+  padding: var(--space-4) var(--space-5);
+  background: var(--color-bg-elevated);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
   align-items: center;
+  margin: var(--space-4) 0;
 }
 
 .save-btn,
@@ -1336,53 +1321,53 @@ onBeforeUnmount(() => {
 
 .extract-help p {
   margin: 0;
-  font-size: 12px;
-  color: #909399;
-  line-height: 1.6;
+  font-size: var(--text-xs);
+  color: var(--color-text-tertiary);
+  line-height: var(--leading-relaxed);
 }
 
 .sync-management-card {
-  border-radius: 12px;
+  border-radius: var(--radius-lg);
   border: none;
-  margin-bottom: 20px;
+  margin-bottom: var(--space-5);
   width: 100%;
 }
 
 .sync-info-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 20px;
+  gap: var(--space-5);
 }
 
 .sync-stat-card {
   display: flex;
   align-items: center;
   width: 100%;
-  gap: 16px;
-  padding: 20px;
-  background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
-  border-radius: 12px;
-  border: 1px solid #ebeef5;
-  transition: all 0.3s ease;
+  gap: var(--space-4);
+  padding: var(--space-5);
+  background: var(--gradient-card);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--neutral-100);
+  transition: all var(--duration-base) var(--ease-out);
 }
 
 .sync-stat-card:hover {
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  box-shadow: var(--shadow-md);
 }
 
 .stat-icon {
   width: 56px;
   height: 56px;
-  border-radius: 12px;
+  border-radius: var(--radius-lg);
   display: flex;
   align-items: center;
   justify-content: center;
-  color: white;
+  color: var(--color-text-inverse);
 }
 
 .auto-sync-icon {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: var(--gradient-hero);
 }
 
 .cycle-icon {
@@ -1402,39 +1387,39 @@ onBeforeUnmount(() => {
 }
 
 .stat-label {
-  font-size: 13px;
-  color: #909399;
-  margin-bottom: 4px;
+  font-size: var(--text-sm);
+  color: var(--color-text-tertiary);
+  margin-bottom: var(--space-1);
 }
 
 .stat-value {
-  font-size: 18px;
-  font-weight: 600;
-  color: #303133;
+  font-size: var(--text-xl);
+  font-weight: var(--weight-semibold);
+  color: var(--color-text-primary);
 }
 
 .stat-value.is-enabled {
-  color: #67c23a;
+  color: var(--success);
 }
 
 .stat-value.highlight {
-  color: #409eff;
+  color: var(--brand-500);
 }
 
 .sync-progress {
-  margin-top: 20px;
-  padding: 16px;
-  background: linear-gradient(135deg, #ecf5ff 0%, #f0f9ff 100%);
-  border-radius: 8px;
-  border: 1px solid #d9ecff;
+  margin-top: var(--space-5);
+  padding: var(--space-4);
+  background: linear-gradient(135deg, var(--brand-50) 0%, #f0f9ff 100%);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--brand-100);
 }
 
 .progress-indicator {
   display: flex;
   align-items: center;
-  gap: 12px;
-  color: #409eff;
-  font-weight: 500;
+  gap: var(--space-3);
+  color: var(--brand-500);
+  font-weight: var(--weight-medium);
 }
 
 .is-loading {
@@ -1452,16 +1437,16 @@ onBeforeUnmount(() => {
 }
 
 .sync-empty {
-  padding: 20px;
+  padding: var(--space-5);
 }
 
 .emby-status-alert {
-  margin-bottom: 20px;
-  border-radius: 8px;
+  margin-bottom: var(--space-5);
+  border-radius: var(--radius-md);
 }
 
 .tips-alert {
-  border-radius: 8px;
+  border-radius: var(--radius-md);
 }
 
 @media (max-width: 1200px) {
@@ -1472,7 +1457,7 @@ onBeforeUnmount(() => {
 
 @media (max-width: 768px) {
   .emby-content {
-    padding: 12px;
+    padding: var(--space-3);
   }
 
   .emby-settings-wrapper {
@@ -1480,11 +1465,11 @@ onBeforeUnmount(() => {
   }
 
   .emby-form {
-    gap: 16px;
+    gap: var(--space-4);
   }
 
   .settings-card {
-    border-radius: 8px;
+    border-radius: var(--radius-md);
   }
 
   .settings-card:hover {
@@ -1505,16 +1490,16 @@ onBeforeUnmount(() => {
   }
 
   .card-title {
-    font-size: 16px;
+    font-size: var(--text-lg);
   }
 
   .card-subtitle {
-    font-size: 12px;
+    font-size: var(--text-xs);
   }
 
   .card-header-action {
     width: 100%;
-    margin-top: 12px;
+    margin-top: var(--space-3);
   }
 
   .card-header-action .el-button {
@@ -1528,11 +1513,15 @@ onBeforeUnmount(() => {
   .emby-example-inline {
     flex-direction: column;
     align-items: flex-start;
-    gap: 8px;
+    gap: var(--space-2);
   }
 
   .form-help {
     flex-wrap: nowrap;
+  }
+
+  .form-help:has(.el-icon) {
+    display: flex;
     align-items: flex-start;
   }
 
@@ -1546,24 +1535,25 @@ onBeforeUnmount(() => {
   }
 
   .config-links {
-    flex-direction: column;
-    align-items: flex-start;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
   }
 
   .config-links .help-link {
-    margin-top: 4px;
+    margin-top: 0;
   }
 
   .action-link {
-    margin-left: 0;
-    margin-top: 4px;
+    margin-left: var(--space-2);
+    margin-top: 0;
   }
 
   .form-actions-wrapper {
     flex-direction: column;
     align-items: stretch;
-    padding: 16px;
-    gap: 12px;
+    padding: var(--space-4);
+    gap: var(--space-3);
   }
 
   .save-btn,
@@ -1577,17 +1567,17 @@ onBeforeUnmount(() => {
   }
 
   .sync-management-card {
-    border-radius: 8px;
+    border-radius: var(--radius-md);
   }
 
   .sync-info-grid {
     grid-template-columns: 1fr;
-    gap: 12px;
+    gap: var(--space-3);
   }
 
   .sync-stat-card {
-    padding: 14px;
-    gap: 12px;
+    padding: var(--space-4);
+    gap: var(--space-3);
   }
 
   .sync-stat-card:hover {
@@ -1604,48 +1594,48 @@ onBeforeUnmount(() => {
   }
 
   .stat-label {
-    font-size: 12px;
+    font-size: var(--text-xs);
   }
 
   .stat-value {
-    font-size: 15px;
+    font-size: var(--text-md);
   }
 
   .sync-progress {
-    padding: 12px;
+    padding: var(--space-3);
   }
 
   .feature-item {
-    padding: 12px 0;
+    padding: var(--space-3) 0;
   }
 
   .danger-item {
-    margin: 0 -12px;
-    padding: 12px;
+    margin: 0 calc(-1 * var(--space-3));
+    padding: var(--space-3);
     border-radius: 0;
   }
 
   .danger-alert {
-    font-size: 12px;
+    font-size: var(--text-xs);
   }
 
   .delete-rules {
-    font-size: 12px;
+    font-size: var(--text-xs);
   }
 
   .delete-rules li {
-    margin: 4px 0;
+    margin: var(--space-1) 0;
   }
 
   .emby-status-alert,
   .tips-alert {
-    border-radius: 8px;
+    border-radius: var(--radius-md);
   }
 }
 
 @media (max-width: 480px) {
   .emby-content {
-    padding: 8px;
+    padding: var(--space-2);
   }
 
   .card-header-icon {
@@ -1658,25 +1648,25 @@ onBeforeUnmount(() => {
   }
 
   .card-title {
-    font-size: 15px;
+    font-size: var(--text-base);
   }
 
   .switch-wrapper {
     flex-direction: column;
     align-items: flex-start;
-    gap: 8px;
+    gap: var(--space-2);
   }
 
   .switch-label {
-    font-size: 13px;
+    font-size: var(--text-sm);
   }
 
   .feature-description {
-    font-size: 12px;
+    font-size: var(--text-xs);
   }
 
   .sync-stat-card {
-    padding: 12px;
+    padding: var(--space-3);
   }
 
   .stat-icon {
@@ -1689,7 +1679,7 @@ onBeforeUnmount(() => {
   }
 
   .stat-value {
-    font-size: 14px;
+    font-size: var(--text-sm);
   }
 }
 </style>

@@ -1,28 +1,18 @@
 <template>
-  <div class="cloud-accounts-page">
-    <div class="page-header">
-      <div class="header-content">
-        <div class="header-title-section">
-          <h1 class="page-title">
-            <el-icon class="title-icon">
-              <Cloudy />
-            </el-icon>
-            网盘账号管理
-          </h1>
-          <p class="page-subtitle">管理网盘账号授权与绑定</p>
-        </div>
-        <div class="header-actions">
-          <el-button
-            type="primary"
-            class="add-btn"
-            :icon="Plus"
-            @click="showAddAccountDialog = true"
-          >
-            <span class="btn-text">添加账号</span>
-          </el-button>
-        </div>
-      </div>
-      <div class="stats-bar mobile-hidden">
+  <div class="main-content-container main-content-container--list cloud-accounts-page">
+    <PageHeader title="网盘账号管理" subtitle="管理网盘账号授权与绑定" :icon="Cloudy" variant="list">
+      <template #actions>
+        <el-button
+          type="primary"
+          class="add-btn"
+          :icon="Plus"
+          @click="showAddAccountDialog = true"
+        >
+          <span class="btn-text">添加账号</span>
+        </el-button>
+      </template>
+    </PageHeader>
+    <div class="stats-bar mobile-hidden">
         <div class="stat-item">
           <div class="stat-icon total">
             <el-icon>
@@ -68,7 +58,6 @@
           </div>
         </div>
       </div>
-    </div>
 
     <div class="accounts-content">
       <div class="accounts-grid" v-if="accounts.length > 0">
@@ -341,9 +330,6 @@
         </div>
         <h3 class="empty-title">暂无网盘账号</h3>
         <p class="empty-description">点击上方按钮添加第一个网盘账号</p>
-        <el-button type="primary" :icon="Plus" @click="showAddAccountDialog = true">
-          添加账号
-        </el-button>
       </div>
 
       <div class="loading-state" v-if="loading">
@@ -544,6 +530,7 @@
 import { SERVER_URL } from '@/const'
 import V115AuthorizationDialog from '@/components/cloud-auth/V115AuthorizationDialog.vue'
 import V115AppSelector from '@/components/cloud-auth/V115AppSelector.vue'
+import PageHeader from '@/components/common/PageHeader.vue'
 import type { AxiosError, AxiosStatic } from 'axios'
 import { inject, ref, computed, onMounted, onUnmounted } from 'vue'
 
@@ -828,11 +815,11 @@ const formatExpireTime = (expireTime: string): string => {
 }
 
 const getSpaceColor = (used: number, total: number): string => {
-  if (total === 0) return '#67c23a'
+  if (total === 0) return 'var(--success)'
   const percentage = used / total
-  if (percentage < 0.5) return '#67c23a'
-  if (percentage < 0.8) return '#e6a23c'
-  return '#f56c6c'
+  if (percentage < 0.5) return 'var(--success)'
+  if (percentage < 0.8) return 'var(--warning)'
+  return 'var(--danger)'
 }
 
 const isExpiringSoon = (expireTime: string): boolean => {
@@ -1314,112 +1301,67 @@ onUnmounted(() => {
 <style scoped>
 .cloud-accounts-page {
   min-height: 100%;
-  background: #f5f7fa;
+  background: var(--color-bg-muted);
   padding: 0;
 }
 
-.page-header {
-  background: #fff;
-  padding: 24px;
-  border-bottom: 1px solid #ebeef5;
-}
-
-.header-content {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  flex-wrap: wrap;
-  gap: 16px;
-  margin-bottom: 20px;
-}
-
-.header-title-section {
-  flex: 1;
-}
-
-.page-title {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin: 0 0 8px 0;
-  font-size: 24px;
-  font-weight: 600;
-  color: #303133;
-}
-
-.title-icon {
-  font-size: 28px;
-  color: #409eff;
-}
-
-.page-subtitle {
-  margin: 0;
-  font-size: 14px;
-  color: #909399;
-}
-
-.header-actions {
-  display: flex;
-  gap: 12px;
-}
-
 .add-btn {
-  background: #409eff !important;
-  border-color: #409eff !important;
+  background: var(--brand-500) !important;
+  border-color: var(--brand-500) !important;
   transition:
     background-color 0.2s ease,
     border-color 0.2s ease;
 }
 
 .add-btn:hover {
-  background: #66b1ff !important;
-  border-color: #66b1ff !important;
+  background: var(--brand-600) !important;
+  border-color: var(--brand-600) !important;
 }
 
 .stats-bar {
   display: flex;
-  gap: 16px;
+  gap: var(--space-4);
   flex-wrap: wrap;
 }
 
 .stat-item {
   display: flex;
   align-items: center;
-  gap: 12px;
-  background: #f5f7fa;
-  padding: 12px 16px;
-  border-radius: 8px;
+  gap: var(--space-3);
+  background: var(--color-bg-muted);
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-md);
   min-width: 140px;
 }
 
 .stat-icon {
   width: 40px;
   height: 40px;
-  border-radius: 8px;
+  border-radius: var(--radius-md);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 20px;
+  font-size: var(--text-2xl);
 }
 
 .stat-icon.total {
-  background: #ecf5ff;
-  color: #409eff;
+  background: var(--brand-50);
+  color: var(--brand-500);
 }
 
 .stat-icon.authorized {
-  background: #f0f9eb;
-  color: #67c23a;
+  background: var(--success-bg);
+  color: var(--success);
 }
 
 .stat-icon.unauthorized {
-  background: #fdf6ec;
-  color: #e6a23c;
+  background: var(--warning-bg);
+  color: var(--warning);
 }
 
 .stat-icon.failed {
-  background: #fef0f0;
-  color: #f56c6c;
+  background: var(--danger-bg);
+  color: var(--danger);
 }
 
 .stat-info {
@@ -1428,33 +1370,33 @@ onUnmounted(() => {
 }
 
 .stat-value {
-  font-size: 20px;
-  font-weight: 600;
-  line-height: 1.2;
-  color: #303133;
+  font-size: var(--text-2xl);
+  font-weight: var(--weight-semibold);
+  line-height: var(--leading-tight);
+  color: var(--color-text-primary);
 }
 
 .stat-label {
-  font-size: 12px;
-  color: #909399;
+  font-size: var(--text-xs);
+  color: var(--color-text-tertiary);
 }
 
 .accounts-content {
-  padding: 24px;
+  padding: var(--space-6);
 }
 
 .accounts-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
-  gap: 20px;
-  margin-bottom: 24px;
+  gap: var(--space-5);
+  margin-bottom: var(--space-6);
 }
 
 .account-card {
-  background: #fff;
-  border-radius: 16px;
+  background: var(--color-bg-elevated);
+  border-radius: var(--radius-xl);
   overflow: hidden;
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+  box-shadow: var(--shadow-md);
   transition:
     transform 0.2s ease,
     box-shadow 0.2s ease;
@@ -1463,7 +1405,7 @@ onUnmounted(() => {
 
 .account-card:hover {
   transform: translateY(-4px);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--shadow-lg);
 }
 
 .account-card.is-authorized {
@@ -1492,32 +1434,32 @@ onUnmounted(() => {
 
 .card-status-bar {
   height: 4px;
-  background: #e4e7ed;
+  background: var(--neutral-200);
 }
 
 .card-status-bar.status-authorized {
-  background: linear-gradient(90deg, #67c23a, #95d475);
+  background: var(--gradient-success);
 }
 
 .card-status-bar.status-unauthorized {
-  background: linear-gradient(90deg, #e6a23c, #f0c78a);
+  background: var(--gradient-warning);
 }
 
 .card-status-bar.status-failed {
-  background: linear-gradient(90deg, #f56c6c, #fab6b6);
+  background: var(--gradient-danger);
 }
 
 .card-main {
-  padding: 16px;
+  padding: var(--space-4);
 }
 
 .card-header {
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
-  margin-bottom: 16px;
-  padding-bottom: 12px;
-  border-bottom: 1px solid #f0f2f5;
+  margin-bottom: var(--space-4);
+  padding-bottom: var(--space-3);
+  border-bottom: 1px solid var(--color-border-subtle);
 }
 
 .card-title-wrapper {
@@ -1527,47 +1469,47 @@ onUnmounted(() => {
 
 .card-id {
   display: inline-block;
-  font-size: 12px;
-  color: #909399;
-  background: #f5f7fa;
-  padding: 2px 8px;
-  border-radius: 4px;
-  margin-right: 8px;
+  font-size: var(--text-xs);
+  color: var(--color-text-tertiary);
+  background: var(--color-bg-muted);
+  padding: 2px var(--space-2);
+  border-radius: var(--radius-sm);
+  margin-right: var(--space-2);
 }
 
 .card-name {
-  font-size: 15px;
-  font-weight: 600;
-  color: #303133;
+  font-size: var(--text-md);
+  font-weight: var(--weight-semibold);
+  color: var(--color-text-primary);
   word-break: break-all;
 }
 
 .source-tag {
   flex-shrink: 0;
-  margin-left: 8px;
+  margin-left: var(--space-2);
 }
 
 .card-body {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: var(--space-3);
 }
 
 .info-row {
   display: flex;
-  align-items: middle;
-  gap: 12px;
+  align-items: center;
+  gap: var(--space-3);
 }
 
 .info-icon {
   width: 32px;
   height: 32px;
-  border-radius: 8px;
-  background: #f5f7fa;
+  border-radius: var(--radius-md);
+  background: var(--color-bg-muted);
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #909399;
+  color: var(--color-text-tertiary);
   flex-shrink: 0;
 }
 
@@ -1580,19 +1522,19 @@ onUnmounted(() => {
 }
 
 .info-label {
-  font-size: 13px;
-  color: #909399;
+  font-size: var(--text-sm);
+  color: var(--color-text-tertiary);
 }
 
 .info-value {
-  font-size: 14px;
-  color: #303133;
+  font-size: var(--text-base);
+  color: var(--color-text-primary);
   text-align: right;
 }
 
 .path-value {
   font-family: 'SF Mono', Monaco, monospace;
-  font-size: 12px;
+  font-size: var(--text-xs);
   word-break: break-all;
   max-width: 200px;
 }
@@ -1600,91 +1542,91 @@ onUnmounted(() => {
 .status-row {
   display: flex;
   align-items: center;
-  gap: 8px;
-  margin-top: 8px;
-  padding-top: 12px;
-  border-top: 1px dashed #ebeef5;
+  gap: var(--space-2);
+  margin-top: var(--space-2);
+  padding-top: var(--space-3);
+  border-top: 1px dashed var(--color-border-subtle);
 }
 
 .status-divider {
   height: 1px;
-  background: #ebeef5;
-  margin: 8px 0;
+  background: var(--color-border-subtle);
+  margin: var(--space-2) 0;
 }
 
 .disk-status-section {
-  background: #fafbfc;
-  border-radius: 8px;
-  padding: 12px;
-  margin-top: 4px;
+  background: var(--color-bg-muted);
+  border-radius: var(--radius-md);
+  padding: var(--space-3);
+  margin-top: var(--space-1);
 }
 
 .status-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 12px;
+  margin-bottom: var(--space-3);
 }
 
 .status-title {
-  font-size: 13px;
-  font-weight: 600;
-  color: #606266;
+  font-size: var(--text-sm);
+  font-weight: var(--weight-semibold);
+  color: var(--color-text-secondary);
 }
 
 .no-status {
   text-align: center;
-  color: #909399;
-  font-size: 13px;
-  padding: 8px 0;
+  color: var(--color-text-tertiary);
+  font-size: var(--text-sm);
+  padding: var(--space-2) 0;
 }
 
 .space-info {
   display: flex;
   flex-direction: column;
   align-items: flex-end;
-  gap: 4px;
+  gap: var(--space-1);
   flex: 1;
 }
 
 .space-text {
-  font-size: 12px;
-  color: #606266;
+  font-size: var(--text-xs);
+  color: var(--color-text-secondary);
 }
 
 .expire-warning {
-  color: #f56c6c;
-  font-weight: 500;
+  color: var(--danger);
+  font-weight: var(--weight-medium);
 }
 
 .status-indicator {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  padding: 6px 12px;
-  border-radius: 20px;
-  font-size: 13px;
-  font-weight: 500;
+  padding: 6px var(--space-3);
+  border-radius: var(--radius-2xl);
+  font-size: var(--text-sm);
+  font-weight: var(--weight-medium);
 }
 
 .status-indicator.status-authorized {
-  background: #f0f9eb;
-  color: #67c23a;
+  background: var(--success-bg);
+  color: var(--success);
 }
 
 .status-indicator.status-unauthorized {
-  background: #fdf6ec;
-  color: #e6a23c;
+  background: var(--warning-bg);
+  color: var(--warning);
 }
 
 .status-indicator.status-failed {
-  background: #fef0f0;
-  color: #f56c6c;
+  background: var(--danger-bg);
+  color: var(--danger);
 }
 
 .error-help-icon {
-  font-size: 16px;
-  color: #f56c6c;
+  font-size: var(--text-lg);
+  color: var(--danger);
   cursor: help;
 }
 
@@ -1705,10 +1647,10 @@ onUnmounted(() => {
 .card-footer {
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
-  padding-top: 16px;
-  margin-top: 12px;
-  border-top: 1px solid #f0f2f5;
+  gap: var(--space-2);
+  padding-top: var(--space-4);
+  margin-top: var(--space-3);
+  border-top: 1px solid var(--color-border-subtle);
 }
 
 .card-footer .el-button {
@@ -1721,35 +1663,35 @@ onUnmounted(() => {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 60px 20px;
-  background: #fff;
-  border-radius: 16px;
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
-  margin-bottom: 24px;
+  padding: 60px var(--space-5);
+  background: var(--color-bg-elevated);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-md);
+  margin-bottom: var(--space-6);
 }
 
 .empty-illustration {
   position: relative;
-  margin-bottom: 24px;
+  margin-bottom: var(--space-6);
 }
 
 .empty-icon {
   font-size: 80px;
-  color: #dcdfe6;
+  color: var(--neutral-200);
 }
 
 .empty-dots {
   display: flex;
   justify-content: center;
-  gap: 8px;
-  margin-top: 16px;
+  gap: var(--space-2);
+  margin-top: var(--space-4);
 }
 
 .empty-dots span {
   width: 8px;
   height: 8px;
-  border-radius: 50%;
-  background: #dcdfe6;
+  border-radius: var(--radius-full);
+  background: var(--neutral-200);
   animation: bounce 1.4s infinite ease-in-out both;
 }
 
@@ -1774,16 +1716,16 @@ onUnmounted(() => {
 }
 
 .empty-title {
-  margin: 0 0 8px 0;
-  font-size: 18px;
-  font-weight: 600;
-  color: #303133;
+  margin: 0 0 var(--space-2) 0;
+  font-size: var(--text-xl);
+  font-weight: var(--weight-semibold);
+  color: var(--color-text-primary);
 }
 
 .empty-description {
-  margin: 0 0 24px 0;
-  font-size: 14px;
-  color: #909399;
+  margin: 0 0 var(--space-6) 0;
+  font-size: var(--text-base);
+  color: var(--color-text-tertiary);
 }
 
 .loading-state {
@@ -1791,39 +1733,39 @@ onUnmounted(() => {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 60px 20px;
-  background: #fff;
-  border-radius: 16px;
-  color: #909399;
-  gap: 12px;
+  padding: 60px var(--space-5);
+  background: var(--color-bg-elevated);
+  border-radius: var(--radius-xl);
+  color: var(--color-text-tertiary);
+  gap: var(--space-3);
 }
 
 .loading-icon {
   font-size: 32px;
-  color: #409eff;
+  color: var(--brand-500);
 }
 
 .page-footer-tips {
   border: none;
-  border-radius: 16px;
+  border-radius: var(--radius-xl);
   overflow: hidden;
-  background: #fff;
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+  background: var(--color-bg-elevated);
+  box-shadow: var(--shadow-md);
 }
 
 .tips-header {
   display: flex;
   align-items: center;
-  gap: 8px;
-  padding: 14px 20px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: #fff;
-  font-size: 15px;
-  font-weight: 600;
+  gap: var(--space-2);
+  padding: 14px var(--space-5);
+  background: var(--gradient-hero);
+  color: var(--color-text-inverse);
+  font-size: var(--text-md);
+  font-weight: var(--weight-semibold);
 }
 
 .tips-icon {
-  font-size: 18px;
+  font-size: var(--text-xl);
 }
 
 .tips-content {
@@ -1835,8 +1777,8 @@ onUnmounted(() => {
 .tip-group {
   flex: 1;
   min-width: 300px;
-  padding: 20px;
-  border-right: 1px solid #f0f2f5;
+  padding: var(--space-5);
+  border-right: 1px solid var(--color-border-subtle);
 }
 
 .tip-group:last-child {
@@ -1846,18 +1788,18 @@ onUnmounted(() => {
 .tip-group-title {
   display: flex;
   align-items: center;
-  gap: 8px;
-  margin-bottom: 16px;
+  gap: var(--space-2);
+  margin-bottom: var(--space-4);
   padding-bottom: 10px;
-  border-bottom: 2px solid #f0f2f5;
-  font-size: 15px;
-  font-weight: 600;
-  color: #303133;
+  border-bottom: 2px solid var(--color-border-subtle);
+  font-size: var(--text-md);
+  font-weight: var(--weight-semibold);
+  color: var(--color-text-primary);
 }
 
 .tip-group-title .el-icon {
-  color: #e6a23c;
-  font-size: 18px;
+  color: var(--warning);
+  font-size: var(--text-xl);
 }
 
 .tip-group-items {
@@ -1869,29 +1811,29 @@ onUnmounted(() => {
 .tip-item {
   display: flex;
   align-items: flex-start;
-  gap: 8px;
-  font-size: 13px;
-  color: #606266;
-  line-height: 1.6;
+  gap: var(--space-2);
+  font-size: var(--text-sm);
+  color: var(--color-text-secondary);
+  line-height: var(--leading-relaxed);
 }
 
 .tip-bullet {
   flex-shrink: 0;
   width: 16px;
-  color: #c0c4cc;
+  color: var(--neutral-300);
   text-align: center;
 }
 
 .tip-highlight {
-  background: linear-gradient(135deg, #fdf6ec 0%, #fef8eb 100%);
+  background: linear-gradient(135deg, var(--warning-bg) 0%, #fef8eb 100%);
   margin: 6px -12px;
-  padding: 12px;
-  border-radius: 8px;
-  border-left: 3px solid #e6a23c;
+  padding: var(--space-3);
+  border-radius: var(--radius-md);
+  border-left: 3px solid var(--warning);
 }
 
 .tip-highlight .tip-bullet {
-  color: #e6a23c;
+  color: var(--warning);
 }
 
 .tip-highlight span:last-child {
@@ -1901,7 +1843,7 @@ onUnmounted(() => {
 .dialog-footer {
   display: flex;
   justify-content: center;
-  gap: 12px;
+  gap: var(--space-3);
 }
 
 .oauth-iframe-container {
@@ -1917,73 +1859,43 @@ onUnmounted(() => {
 }
 
 @media (max-width: 768px) {
-  .page-header {
-    padding: 12px;
-    background: #fff;
-  }
-
-  .header-title-section {
-    display: none;
-  }
-
-  .header-content {
-    margin-bottom: 0;
-  }
-
-  .header-actions {
-    justify-content: stretch;
-  }
-
-  .header-actions .add-btn {
-    width: 100%;
-    background: #409eff !important;
-    border-color: #409eff !important;
-    color: #fff !important;
-  }
-
-  .header-actions .add-btn:hover {
-    background: #66b1ff !important;
-    border-color: #66b1ff !important;
-    transform: none;
-  }
-
   .mobile-hidden {
     display: none !important;
   }
 
   .accounts-content {
-    padding: 12px;
+    padding: var(--space-3);
   }
 
   .accounts-grid {
     grid-template-columns: 1fr;
-    gap: 12px;
+    gap: var(--space-3);
   }
 
   .account-card {
-    border-radius: 12px;
+    border-radius: var(--radius-lg);
   }
 
   .card-main {
-    padding: 12px;
+    padding: var(--space-3);
   }
 
   .card-header {
-    margin-bottom: 12px;
+    margin-bottom: var(--space-3);
     padding-bottom: 10px;
   }
 
   .card-id {
-    font-size: 11px;
+    font-size: var(--text-2xs);
     padding: 2px 6px;
   }
 
   .card-name {
-    font-size: 14px;
+    font-size: var(--text-base);
   }
 
   .source-tag {
-    font-size: 11px;
+    font-size: var(--text-2xs);
   }
 
   .card-body {
@@ -1997,19 +1909,19 @@ onUnmounted(() => {
   .info-icon {
     width: 28px;
     height: 28px;
-    font-size: 14px;
+    font-size: var(--text-base);
   }
 
   .info-label {
-    font-size: 12px;
+    font-size: var(--text-xs);
   }
 
   .info-value {
-    font-size: 13px;
+    font-size: var(--text-sm);
   }
 
   .path-value {
-    font-size: 11px;
+    font-size: var(--text-2xs);
     max-width: 140px;
   }
 
@@ -2020,7 +1932,7 @@ onUnmounted(() => {
 
   .status-indicator {
     padding: 5px 10px;
-    font-size: 12px;
+    font-size: var(--text-xs);
   }
 
   .disk-status-section {
@@ -2032,7 +1944,7 @@ onUnmounted(() => {
   }
 
   .status-title {
-    font-size: 12px;
+    font-size: var(--text-xs);
   }
 
   .space-info {

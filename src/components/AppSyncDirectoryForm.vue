@@ -1151,14 +1151,14 @@ onUnmounted(() => {
 }
 
 .form-help {
-  font-size: 12px;
-  color: #606266;
-  margin-top: 8px;
-  line-height: 1.6;
+  font-size: var(--text-xs);
+  color: var(--color-text-tertiary);
+  margin-top: var(--space-3);
+  line-height: var(--leading-relaxed);
 }
 
 .form-help p {
-  margin: 4px 0;
+  margin: var(--space-1) 0;
 }
 
 .pan-dir-input {

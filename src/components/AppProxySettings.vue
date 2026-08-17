@@ -1,6 +1,7 @@
 <template>
   <!-- 网络代理设置部分 -->
   <div class="main-content-container proxy-section">
+    <PageHeader title="网络代理设置" subtitle="配置系统 HTTP 代理以访问外部服务" :icon="Connection" />
     <el-form
       :model="proxyData"
       :label-position="checkIsMobile ? 'top' : 'left'"
@@ -70,6 +71,7 @@ import { Connection, Check } from '@element-plus/icons-vue'
 import { inject, onMounted, reactive, ref } from 'vue'
 import { ElMessage } from 'element-plus'
 import { isMobile } from '@/utils/deviceUtils'
+import PageHeader from '@/components/common/PageHeader.vue'
 const checkIsMobile = ref(isMobile())
 interface ProxyData {
   proxy_url: string
@@ -263,10 +265,10 @@ onMounted(() => {
 }
 
 .form-help {
-  font-size: 12px;
-  color: #909399;
-  margin-top: 4px;
-  line-height: 1.4;
+  font-size: var(--text-xs);
+  color: var(--color-text-tertiary);
+  margin-top: var(--space-3);
+  line-height: var(--leading-relaxed);
 }
 
 .proxy-status {

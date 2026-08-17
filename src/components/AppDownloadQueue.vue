@@ -1,14 +1,7 @@
 <template>
-  <div class="download-queue-container">
-    <div class="card-header">
-      <div>
-        <h2 class="hidden-md-and-down">下载队列</h2>
-        <p>
-          strm同步时会下载元数据，这里是下载队列，可以观察下载进度或者清空下载队列（每隔一段时间会继续未完成的下载，除非关闭元数据下载）
-        </p>
-        <p>来源是"Emby媒体信息提取"的记录不会真正下载，只是触发Emby媒体信息提取。</p>
-      </div>
-      <div class="header-actions">
+  <div class="main-content-container main-content-container--list">
+    <PageHeader title="下载队列" subtitle="strm 同步时会下载元数据，可观察下载进度或清空下载队列（每隔一段时间会继续未完成的下载，除非关闭元数据下载）。来源是「Emby媒体信息提取」的记录不会真正下载，只是触发 Emby 媒体信息提取。" :icon="Download" variant="list">
+      <template #actions>
         <el-button type="info" @click="refreshQueue">刷新</el-button>
         <el-button type="success" @click="pauseAllTasks" :disabled="queueStatus === 0"
           >全部暂停</el-button
@@ -20,11 +13,11 @@
         <el-button type="danger" @click="clearSuccessAndFailedTasks"
           >清空成功和失败的任务</el-button
         >
-      </div>
-    </div>
+      </template>
+    </PageHeader>
 
-    <div style="display: flex; gap: 20px; align-items: center">
-      <div class="filter-container" style="width: 120px">
+    <div class="filter-stats-row">
+      <div class="filter-container">
         <el-select v-model="statusFilter" placeholder="请选择状态" @change="handleStatusChange">
           <el-option label="全部状态" :value="-1"></el-option>
           <el-option label="等待中" :value="0"></el-option>
@@ -172,6 +165,8 @@
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
+import { Download } from '@element-plus/icons-vue'
+import PageHeader from '@/components/common/PageHeader.vue'
 import { SERVER_URL } from '@/const'
 import type { AxiosStatic } from 'axios'
 import { inject } from 'vue'
@@ -497,12 +492,6 @@ onUnmounted(() => {
   --el-statistic-content-font-size: 28px;
 }
 
-.download-queue-container {
-  width: 100%;
-  padding: 20px;
-  box-sizing: border-box;
-}
-
 .download-queue-card {
   width: 100%;
   height: 100%;
@@ -510,23 +499,16 @@ onUnmounted(() => {
   flex-direction: column;
 }
 
-.card-header {
+.filter-stats-row {
   display: flex;
-  justify-content: space-between;
+  gap: 20px;
   align-items: center;
+  margin-top: var(--space-4);
 }
 
-.card-header h2 {
-  margin: 0;
-  font-size: 24px;
-  font-weight: 600;
-}
-
-.header-actions {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: flex-start;
-  gap: 12px;
+.filter-container {
+  margin: 16px 0;
+  width: 120px;
 }
 
 .queue-stats {
@@ -534,10 +516,6 @@ onUnmounted(() => {
   gap: 16px;
   margin: 16px 0;
   flex-wrap: wrap;
-}
-
-.filter-container {
-  margin: 16px 0;
 }
 
 .filename {
@@ -565,19 +543,14 @@ onUnmounted(() => {
 
 /* 移动端适配 */
 @media (max-width: 768px) {
-  .download-queue-container {
-    padding: 12px;
-  }
-
-  .card-header {
+  .filter-stats-row {
     flex-direction: column;
-    gap: 12px;
     align-items: flex-start;
+    gap: 12px;
   }
 
-  .header-actions {
+  .filter-container {
     width: 100%;
-    justify-content: space-between;
   }
 
   .queue-stats {

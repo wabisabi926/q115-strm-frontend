@@ -146,9 +146,9 @@ const routes = [
     name: 'upload-queue',
     component: AppUploadQueue,
     meta: {
-      title: '上传下载',
+      title: '同步任务',
       requiresAuth: true,
-      icon: 'Download',
+      icon: 'Refresh',
       showInMenu: true,
     },
   },

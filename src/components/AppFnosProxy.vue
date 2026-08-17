@@ -1,5 +1,10 @@
 <template>
   <div class="main-content-container fnos-proxy-content">
+    <PageHeader
+      title="飞牛影视反代配置"
+      subtitle="解决 senplayer、爆米花、vidhub 等播放器无法播放飞牛影视 STRM 的问题"
+      :icon="Connection"
+    />
     <div class="fnos-proxy-wrapper">
       <el-form
         :model="formData"
@@ -8,18 +13,6 @@
         class="fnos-form"
       >
         <el-card class="settings-card" shadow="hover">
-          <template #header>
-            <div class="card-header-wrapper">
-              <div class="card-header-icon">
-                <el-icon :size="24"><Connection /></el-icon>
-              </div>
-              <div class="card-header-content">
-                <h3 class="card-title">飞牛影视反代配置</h3>
-                <p class="card-subtitle">解决 senplayer、爆米花、vidhub 等播放器无法播放飞牛影视 STRM 的问题</p>
-              </div>
-            </div>
-          </template>
-
           <el-form-item label="启用反代">
             <div class="switch-wrapper">
               <el-switch
@@ -138,16 +131,16 @@
           />
         </el-card>
 
-        <el-alert title="使用说明" type="info" :closable="false" show-icon class="tips-alert">
-          <template #default>
-            <div class="tips-content">
-              <p>1. 填写飞牛影视地址（如 http://192.168.1.10:8005）</p>
-              <p>2. 填写反代端口（如 8006，不能与主服务或 emby302 端口重复）</p>
-              <p>3. 在 senplayer / 爆米花 / vidhub 等播放器中添加飞牛影视服务器，地址填反代的访问地址</p>
-              <p v-if="showPathMaps">4. Docker 环境需配置 STRM 路径映射（飞牛路径|容器内路径）</p>
-            </div>
-          </template>
-        </el-alert>
+        <div class="form-help usage-tip">
+          <el-icon><InfoFilled /></el-icon>
+          <div class="usage-tip-content">
+            <p class="usage-tip-title">使用说明</p>
+            <p>1. 填写飞牛影视地址（如 http://192.168.1.10:8005）</p>
+            <p>2. 填写反代端口（如 8006，不能与主服务或 emby302 端口重复）</p>
+            <p>3. 在 senplayer / 爆米花 / vidhub 等播放器中添加飞牛影视服务器，地址填反代的访问地址</p>
+            <p v-if="showPathMaps">4. Docker 环境需配置 STRM 路径映射（飞牛路径|容器内路径）</p>
+          </div>
+        </div>
       </el-form>
     </div>
   </div>
@@ -160,6 +153,7 @@ import { Check, Connection, InfoFilled, CircleCheck, CircleClose } from '@elemen
 import { ElMessage } from 'element-plus'
 import { inject, onMounted, ref, reactive, computed } from 'vue'
 import { isMobile as checkIsMobile } from '@/utils/deviceUtils'
+import PageHeader from '@/components/common/PageHeader.vue'
 
 const http: AxiosStatic | undefined = inject('$http')
 const isMobile = ref(checkIsMobile())
@@ -352,13 +346,18 @@ onMounted(() => {
 }
 
 .form-help {
+  display: block;
+  font-size: var(--text-sm);
+  color: var(--color-text-secondary);
+  margin-top: var(--space-3);
+  line-height: var(--leading-normal);
+  width: 100%;
+}
+
+.form-help:has(.el-icon) {
   display: flex;
   align-items: flex-start;
-  gap: 6px;
-  font-size: 14px;
-  color: #3c3d40;
-  margin-top: 8px;
-  line-height: 1.5;
+  gap: var(--space-2);
 }
 
 .form-help .el-icon {

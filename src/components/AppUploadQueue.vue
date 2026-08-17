@@ -1,11 +1,7 @@
-﻿<template>
-  <div class="upload-queue-container">
-    <div class="card-header">
-      <div>
-        <h2 class="hidden-md-and-down">上传队列</h2>
-        <p>这里包含strm同步时产生的元数据的上传任务。</p>
-      </div>
-      <div class="header-actions">
+<template>
+  <div class="main-content-container main-content-container--list">
+    <PageHeader title="上传队列" subtitle="这里包含 strm 同步时产生的元数据的上传任务。" :icon="Upload" variant="list">
+      <template #actions>
         <el-button type="info" @click="refreshQueue">刷新</el-button>
         <el-button type="success" @click="pauseAllTasks" :disabled="queueStatus === 0"
           >全部暂停</el-button
@@ -18,11 +14,11 @@
         <el-button type="danger" @click="clearSuccessAndFailedTasks"
           >清空成功和失败的任务</el-button
         >
-      </div>
-    </div>
+      </template>
+    </PageHeader>
 
-    <div style="display: flex; gap: 20px; align-items: center">
-      <div class="filter-container" style="width: 120px">
+    <div class="filter-stats-row">
+      <div class="filter-container">
         <el-select v-model="statusFilter" placeholder="请选择状态" @change="handleStatusChange">
           <el-option label="全部状态" :value="-1"></el-option>
           <el-option label="等待中" :value="0"></el-option>
@@ -166,6 +162,8 @@
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
+import { Upload } from '@element-plus/icons-vue'
+import PageHeader from '@/components/common/PageHeader.vue'
 import { SERVER_URL } from '@/const'
 import type { AxiosStatic } from 'axios'
 import { inject } from 'vue'
@@ -496,12 +494,6 @@ onUnmounted(() => {
 </script>
 
 <style scoped>
-.upload-queue-container {
-  width: 100%;
-  padding: 20px;
-  box-sizing: border-box;
-}
-
 .upload-queue-card {
   width: 100%;
   height: 100%;
@@ -509,23 +501,15 @@ onUnmounted(() => {
   flex-direction: column;
 }
 
-.card-header {
+.filter-stats-row {
   display: flex;
-  justify-content: space-between;
+  gap: 20px;
   align-items: center;
+  margin-top: var(--space-4);
 }
 
-.card-header h2 {
-  margin: 0;
-  font-size: 24px;
-  font-weight: 600;
-}
-
-.header-actions {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: flex-start;
-  gap: 12px;
+.filter-container {
+  width: 120px;
 }
 
 .queue-stats {
@@ -560,19 +544,14 @@ onUnmounted(() => {
 
 /* 移动端适配 */
 @media (max-width: 768px) {
-  .upload-queue-container {
-    padding: 12px;
-  }
-
-  .card-header {
+  .filter-stats-row {
     flex-direction: column;
-    gap: 12px;
     align-items: flex-start;
+    gap: 12px;
   }
 
-  .header-actions {
+  .filter-container {
     width: 100%;
-    justify-content: space-between;
   }
 
   .queue-stats {
