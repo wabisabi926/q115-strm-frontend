@@ -1,16 +1,18 @@
 <template>
   <div class="main-content-container main-content-container--list">
     <PageHeader title="备份记录" subtitle="管理数据库备份记录，支持手动备份与恢复" :icon="Upload" variant="list">
-      <template #actions>
-        <el-button
-          type="primary"
-          :loading="backupStarting"
-          :disabled="backupStore.isRunning"
-          @click="startManualBackup"
-        >
-          <el-icon><Upload /></el-icon>
-          <span>手动备份</span>
-        </el-button>
+      <template #toolbar>
+        <div class="toolbar-right">
+          <el-button
+            type="primary"
+            :loading="backupStarting"
+            :disabled="backupStore.isRunning"
+            @click="startManualBackup"
+          >
+            <el-icon><Upload /></el-icon>
+            <span>手动备份</span>
+          </el-button>
+        </div>
       </template>
     </PageHeader>
 

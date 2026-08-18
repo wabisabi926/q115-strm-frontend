@@ -70,27 +70,27 @@ const { queueStats, queueStatsLoading } = useQueueStats()
 
 <style scoped>
 .stats-card-main {
-  background: white;
-  border-radius: 16px;
-  padding: 20px;
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
-  border: 1px solid #f0f0f0;
+  background: var(--color-bg-elevated);
+  border-radius: var(--radius-xl);
+  padding: var(--space-5);
+  box-shadow: var(--shadow-md);
+  border: 1px solid var(--color-border-subtle);
 }
 
 .stats-card-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 16px;
+  margin-bottom: var(--space-4);
 }
 
 .stats-card-title {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: var(--space-2);
   font-size: 16px;
   font-weight: 600;
-  color: #303133;
+  color: var(--color-text-primary);
 }
 
 .title-icon {
@@ -98,20 +98,20 @@ const { queueStats, queueStatsLoading } = useQueueStats()
 }
 
 .status-badge {
-  padding: 4px 12px;
-  border-radius: 20px;
+  padding: var(--space-1) var(--space-3);
+  border-radius: var(--radius-full);
   font-size: 12px;
   font-weight: 500;
 }
 
 .status-success {
-  background: #e8f5e9;
-  color: #2e7d32;
+  background: var(--success-50);
+  color: var(--success-600);
 }
 
 .status-warning {
-  background: #fff3e0;
-  color: #e65100;
+  background: var(--warning-50);
+  color: var(--warning-600);
   animation: pulse-bg 2s ease-in-out infinite;
 }
 
@@ -127,11 +127,11 @@ const { queueStats, queueStatsLoading } = useQueueStats()
 
 .throttle-warning {
   display: flex;
-  gap: 16px;
-  padding: 16px;
-  background: linear-gradient(135deg, #fff8e1 0%, #ffecb3 100%);
-  border-radius: 12px;
-  margin-bottom: 16px;
+  gap: var(--space-4);
+  padding: var(--space-4);
+  background: linear-gradient(135deg, var(--warning-50) 0%, var(--warning-100) 100%);
+  border-radius: var(--radius-lg);
+  margin-bottom: var(--space-4);
 }
 
 .throttle-icon {
@@ -141,7 +141,7 @@ const { queueStats, queueStatsLoading } = useQueueStats()
 .throttle-details {
   display: flex;
   flex-wrap: wrap;
-  gap: 12px;
+  gap: var(--space-3);
   flex: 1;
 }
 
@@ -153,65 +153,65 @@ const { queueStats, queueStatsLoading } = useQueueStats()
 
 .throttle-item .label {
   font-size: 12px;
-  color: #909399;
+  color: var(--color-text-tertiary);
 }
 
 .throttle-item .value {
   font-size: 14px;
   font-weight: 600;
-  color: #303133;
+  color: var(--color-text-primary);
 }
 
 .metrics-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
-  gap: 12px;
+  gap: var(--space-3);
 }
 
 .metric-item {
   text-align: center;
-  padding: 16px 8px;
-  background: #f8f9fa;
-  border-radius: 12px;
+  padding: var(--space-4) var(--space-2);
+  background: var(--neutral-50);
+  border-radius: var(--radius-lg);
   transition: all 0.3s ease;
 }
 
 .metric-item:hover {
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--shadow-sm);
 }
 
 .metric-item.metric-warning {
-  background: linear-gradient(135deg, #fff8e1 0%, #ffe082 100%);
+  background: linear-gradient(135deg, var(--warning-50) 0%, var(--warning-100) 100%);
 }
 
 .metric-item.metric-danger {
-  background: linear-gradient(135deg, #ffebee 0%, #ffcdd2 100%);
+  background: linear-gradient(135deg, var(--danger-50) 0%, var(--danger-100) 100%);
 }
 
 .metric-value {
   font-size: 24px;
   font-weight: 700;
-  color: #303133;
+  color: var(--color-text-primary);
   font-family: 'SF Mono', 'Monaco', 'Menlo', monospace;
 }
 
 .metric-item.metric-warning .metric-value {
-  color: #e65100;
+  color: var(--warning-600);
 }
 
 .metric-item.metric-danger .metric-value {
-  color: #c62828;
+  color: var(--danger-600);
 }
 
 .metric-label {
   font-size: 12px;
-  color: #909399;
-  margin-top: 4px;
+  color: var(--color-text-tertiary);
+  margin-top: var(--space-1);
 }
 
 .empty-state {
-  padding: 40px 20px;
+  padding: var(--space-10) var(--space-5);
   text-align: center;
 }
 

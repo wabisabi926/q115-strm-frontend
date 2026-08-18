@@ -1,11 +1,13 @@
 <template>
   <div class="main-content-container main-content-container--list sync-directories-page">
     <PageHeader title="同步目录管理" subtitle="管理您的云盘与本地目录的同步配置" :icon="FolderOpened" variant="list">
-      <template #actions>
-        <el-button type="primary" class="add-btn" @click="handleAdd">
-          <el-icon><Plus /></el-icon>
-          <span class="btn-text">添加同步目录</span>
-        </el-button>
+      <template #toolbar>
+        <div class="toolbar-right">
+          <el-button type="primary" class="add-btn" @click="handleAdd">
+            <el-icon><Plus /></el-icon>
+            <span class="btn-text">添加同步目录</span>
+          </el-button>
+        </div>
       </template>
     </PageHeader>
     <div class="stats-bar mobile-hidden">

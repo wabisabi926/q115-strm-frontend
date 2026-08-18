@@ -1,19 +1,21 @@
 <template>
   <div class="main-content-container main-content-container--list">
     <PageHeader title="上传队列" subtitle="这里包含 strm 同步时产生的元数据的上传任务。" :icon="Upload" variant="list">
-      <template #actions>
-        <el-button type="info" @click="refreshQueue">刷新</el-button>
-        <el-button type="success" @click="pauseAllTasks" :disabled="queueStatus === 0"
-          >全部暂停</el-button
-        >
-        <el-button type="primary" @click="resumeAllTasks" :disabled="queueStatus === 1"
-          >全部开始</el-button
-        >
-        <el-button type="warning" @click="retryAllFailedTasks">重试所有失败的任务</el-button>
-        <el-button type="warning" @click="clearQueue">清空等待中的任务</el-button>
-        <el-button type="danger" @click="clearSuccessAndFailedTasks"
-          >清空成功和失败的任务</el-button
-        >
+      <template #toolbar>
+        <div class="toolbar-right">
+          <el-button type="info" @click="refreshQueue">刷新</el-button>
+          <el-button type="success" @click="pauseAllTasks" :disabled="queueStatus === 0"
+            >全部暂停</el-button
+          >
+          <el-button type="primary" @click="resumeAllTasks" :disabled="queueStatus === 1"
+            >全部开始</el-button
+          >
+          <el-button type="warning" @click="retryAllFailedTasks">重试所有失败的任务</el-button>
+          <el-button type="warning" @click="clearQueue">清空等待中的任务</el-button>
+          <el-button type="danger" @click="clearSuccessAndFailedTasks"
+            >清空成功和失败的任务</el-button
+          >
+        </div>
       </template>
     </PageHeader>
 
@@ -30,13 +32,17 @@
       </div>
 
       <div class="queue-stats">
-        <el-statistic :value="uploading">
-          <template #title>
-            <div style="display: inline-flex; align-items: center">
-              <el-text class="mx-1" type="primary">正在上传的任务总数</el-text>
-            </div>
-          </template>
-        </el-statistic>
+        <div class="stat-item stat-item--uploading">
+          <div class="stat-icon">
+            <el-icon :size="18">
+              <Upload />
+            </el-icon>
+          </div>
+          <div class="stat-info">
+            <div class="stat-value">{{ uploading }}</div>
+            <div class="stat-label">正在上传的任务总数</div>
+          </div>
+        </div>
       </div>
     </div>
 
@@ -503,20 +509,67 @@ onUnmounted(() => {
 
 .filter-stats-row {
   display: flex;
-  gap: 20px;
+  gap: var(--space-4);
   align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
   margin-top: var(--space-4);
 }
 
 .filter-container {
-  width: 120px;
+  min-width: 180px;
+  flex: 0 0 auto;
 }
 
 .queue-stats {
   display: flex;
-  gap: 16px;
-  margin: 16px 0;
+  gap: var(--space-3);
   flex-wrap: wrap;
+  justify-content: flex-end;
+  flex: 1 1 auto;
+  min-width: 240px;
+}
+
+.stat-item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-4);
+  background: var(--color-bg-elevated);
+  border: 1px solid var(--color-border-subtle);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  min-width: 240px;
+}
+
+.stat-item--uploading .stat-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  background: var(--success-50);
+  color: var(--success-500);
+  border-radius: var(--radius-md);
+}
+
+.stat-info {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.stat-value {
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--color-text-primary);
+  line-height: 1.1;
+}
+
+.stat-label {
+  font-size: 12px;
+  color: var(--color-text-tertiary);
+  line-height: 1.2;
 }
 
 .filename {
@@ -546,16 +599,23 @@ onUnmounted(() => {
 @media (max-width: 768px) {
   .filter-stats-row {
     flex-direction: column;
-    align-items: flex-start;
-    gap: 12px;
+    align-items: stretch;
+    gap: var(--space-3);
   }
 
   .filter-container {
     width: 100%;
+    min-width: auto;
   }
 
   .queue-stats {
-    gap: 12px;
+    justify-content: stretch;
+    min-width: auto;
+  }
+
+  .stat-item {
+    min-width: auto;
+    flex: 1 1 100%;
   }
 
   :deep(.el-table) {

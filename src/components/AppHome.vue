@@ -98,6 +98,7 @@ const handleLogDialogClose = () => {
   flex-direction: column;
   gap: var(--space-6);
   padding: 0;
+  --home-side-col: 320px;
 }
 
 .header-section {
@@ -135,7 +136,7 @@ const handleLogDialogClose = () => {
 
 .stats-row {
   display: grid;
-  grid-template-columns: 340px 1fr;
+  grid-template-columns: var(--home-side-col) 1fr;
   gap: var(--space-5);
 }
 
@@ -146,7 +147,7 @@ const handleLogDialogClose = () => {
 
 .info-grid {
   display: grid;
-  grid-template-columns: 280px 1fr;
+  grid-template-columns: var(--home-side-col) 1fr;
   gap: var(--space-5);
 }
 
@@ -155,7 +156,7 @@ const handleLogDialogClose = () => {
   border-radius: var(--radius-xl);
   padding: var(--space-5);
   box-shadow: var(--shadow-md);
-  border: 1px solid #f0f0f0;
+  border: 1px solid var(--color-border-subtle);
 }
 
 .info-card-header {
@@ -167,7 +168,7 @@ const handleLogDialogClose = () => {
   color: var(--color-text-primary);
   margin-bottom: var(--space-4);
   padding-bottom: var(--space-3);
-  border-bottom: 1px solid #f0f0f0;
+  border-bottom: 1px solid var(--color-border-subtle);
 }
 
 .info-icon {
@@ -193,14 +194,14 @@ const handleLogDialogClose = () => {
 .notice-item {
   display: flex;
   align-items: flex-start;
-  gap: 10px;
+  gap: var(--space-2);
   font-size: var(--text-sm);
   color: var(--color-text-secondary);
   line-height: var(--leading-normal);
 }
 
 .notice-item.notice-important {
-  color: #c62828;
+  color: var(--danger-600);
 }
 
 .notice-number {
@@ -209,7 +210,7 @@ const handleLogDialogClose = () => {
   justify-content: center;
   min-width: 20px;
   height: 20px;
-  background: #f0f0f0;
+  background: var(--neutral-100);
   border-radius: var(--radius-full);
   font-size: var(--text-2xs);
   font-weight: var(--weight-semibold);
@@ -218,8 +219,8 @@ const handleLogDialogClose = () => {
 }
 
 .notice-item.notice-important .notice-number {
-  background: #ffebee;
-  color: #c62828;
+  background: var(--danger-50);
+  color: var(--danger-600);
 }
 
 .notice-item a {

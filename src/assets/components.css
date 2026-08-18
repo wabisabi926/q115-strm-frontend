@@ -970,6 +970,18 @@
   --el-button-active-border-color: var(--brand-700) !important;
 }
 
+.el-button--primary.is-plain {
+  --el-button-bg-color: var(--brand-50) !important;
+  --el-button-bg-color-hover: var(--brand-100) !important;
+  --el-button-bg-color-active: var(--brand-200) !important;
+  --el-button-border-color: var(--brand-100) !important;
+  --el-button-border-color-hover: var(--brand-200) !important;
+  --el-button-border-color-active: var(--brand-300) !important;
+  --el-button-text-color: var(--brand-600) !important;
+  --el-button-text-color-hover: var(--brand-700) !important;
+  --el-button-text-color-active: var(--brand-800) !important;
+}
+
 .el-tag {
   border-radius: var(--radius-sm) !important;
 }

@@ -13,6 +13,7 @@ import AppUploadQueue from '@/components/AppUploadQueue.vue'
 import AppDownloadQueue from '@/components/AppDownloadQueue.vue'
 import AppNotificationChannels from '@/components/AppNotificationChannels.vue'
 import AppApiKeys from '@/components/AppApiKeys.vue'
+import AppEmbyNotificationSettings from '@/components/AppEmbyNotificationSettings.vue'
 
 import { createRouter, createWebHashHistory } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
@@ -223,6 +224,53 @@ const routes = [
     },
   },
   {
+    path: '/notification-settings',
+    name: 'notification-settings',
+    redirect: '/notification-settings/channels',
+    meta: {
+      title: '通知设置',
+      requiresAuth: true,
+      icon: 'BellFilled',
+      showInMenu: true,
+    },
+  },
+  {
+    path: '/notification-settings/channels',
+    name: 'notification-channels',
+    component: AppNotificationChannels,
+    meta: {
+      title: '通知管理',
+      requiresAuth: true,
+      parent: 'notification-settings',
+      icon: 'Promotion',
+      showInMenu: true,
+    },
+  },
+  {
+    path: '/notification-settings/api-keys',
+    name: 'notification-api-keys',
+    component: AppApiKeys,
+    meta: {
+      title: 'API Key',
+      requiresAuth: true,
+      parent: 'notification-settings',
+      icon: 'Key',
+      showInMenu: true,
+    },
+  },
+  {
+    path: '/notification-settings/emby',
+    name: 'notification-emby',
+    component: AppEmbyNotificationSettings,
+    meta: {
+      title: 'Emby通知配置',
+      requiresAuth: true,
+      parent: 'notification-settings',
+      icon: 'Bell',
+      showInMenu: true,
+    },
+  },
+  {
     path: '/settings',
     name: 'settings',
     component: AppUserSettings,
@@ -242,30 +290,6 @@ const routes = [
       requiresAuth: true,
       parent: 'settings',
       icon: 'UserFilled',
-      showInMenu: true,
-    },
-  },
-  {
-    path: '/settings/api-keys',
-    name: 'settings-api-keys',
-    component: AppApiKeys,
-    meta: {
-      title: 'API Key',
-      requiresAuth: true,
-      parent: 'settings',
-      icon: 'Key',
-      showInMenu: true,
-    },
-  },
-  {
-    path: '/settings/notification',
-    name: 'settings-notification',
-    component: AppNotificationChannels,
-    meta: {
-      title: '通知管理',
-      requiresAuth: true,
-      parent: 'settings',
-      icon: 'Promotion',
       showInMenu: true,
     },
   },

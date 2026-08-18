@@ -69,22 +69,24 @@
             isEditMode
           "
         >
-          <div class="pan-dir-input">
-            <el-input
-              v-model="form.base_cid"
-              placeholder="点击选择按钮选择网盘目录"
-              :disabled="loading"
-              readonly
-            />
-            <el-button type="primary" @click="openDirSelector(false)" :disabled="loading">
-              选择目录
-            </el-button>
+          <div class="form-item-stack">
+            <div class="pan-dir-input">
+              <el-input
+                v-model="form.base_cid"
+                placeholder="点击选择按钮选择网盘目录"
+                :disabled="loading"
+                readonly
+              />
+              <el-button type="primary" @click="openDirSelector(false)" :disabled="loading">
+                选择目录
+              </el-button>
+            </div>
+            <div v-if="selectedDirPath" class="selected-path-inline">
+              <span class="path-label">选中目录路径：</span>
+              <code class="path-url">{{ selectedDirPath }}</code>
+            </div>
+            <div class="form-tip form-tip--block">选择网盘中要同步的目录</div>
           </div>
-          <div v-if="selectedDirPath" class="selected-path-inline">
-            <span class="path-label">选中目录路径：</span>
-            <code class="path-url">{{ selectedDirPath }}</code>
-          </div>
-          <div class="form-tip">选择网盘中要同步的目录</div>
         </el-form-item>
         <el-form-item
           label="目标路径"
@@ -95,18 +97,20 @@
             isEditMode
           "
         >
-          <div class="pan-dir-input">
-            <el-input
-              v-model="form.local_path"
-              placeholder="点击选择按钮选择本地目录"
-              :disabled="loading"
-              readonly
-            />
-            <el-button type="primary" @click="openDirSelector(true)" :disabled="loading">
-              选择目录
-            </el-button>
+          <div class="form-item-stack">
+            <div class="pan-dir-input">
+              <el-input
+                v-model="form.local_path"
+                placeholder="点击选择按钮选择本地目录"
+                :disabled="loading"
+                readonly
+              />
+              <el-button type="primary" @click="openDirSelector(true)" :disabled="loading">
+                选择目录
+              </el-button>
+            </div>
+            <div class="form-tip form-tip--block">选择本地目录作为STRM文件的存放位置</div>
           </div>
-          <div class="form-tip">选择本地目录作为STRM文件的存放位置</div>
         </el-form-item>
 
         <el-form-item
@@ -117,24 +121,28 @@
             isEditMode
           "
         >
-          <el-input
-            v-model="form.strm_path"
-            placeholder="自动计算：本地目录 + 选中目录路径"
-            :disabled="true"
-            readonly
-          />
-          <div class="form-tip">STRM和元数据实际存放目录（自动生成）</div>
+          <div class="form-item-stack">
+            <el-input
+              v-model="form.strm_path"
+              placeholder="自动计算：本地目录 + 选中目录路径"
+              :disabled="true"
+              readonly
+            />
+            <div class="form-tip form-tip--block">STRM和元数据实际存放目录（自动生成）</div>
+          </div>
         </el-form-item>
 
         <el-form-item label="是否自定义设置" prop="custom_config">
-          <el-switch
-            v-model="form.custom_config"
-            :active-value="true"
-            :inactive-value="false"
-            :disabled="loading"
-          />
-          <div class="form-tip">
-            开启后可自定义视频扩展名和元数据扩展名配置，否则使用strm设置中的值
+          <div class="form-item-stack">
+            <el-switch
+              v-model="form.custom_config"
+              :active-value="true"
+              :inactive-value="false"
+              :disabled="loading"
+            />
+            <div class="form-tip form-tip--block">
+              开启后可自定义视频扩展名和元数据扩展名配置，否则使用strm设置中的值
+            </div>
           </div>
         </el-form-item>
 
@@ -396,22 +404,24 @@
             isEditMode
           "
         >
-          <div class="pan-dir-input">
-            <el-input
-              v-model="form.base_cid"
-              placeholder="点击选择按钮选择网盘目录"
-              :disabled="loading"
-              readonly
-            />
-            <el-button type="primary" @click="openDirSelector(false)" :disabled="loading">
-              选择目录
-            </el-button>
+          <div class="form-item-stack">
+            <div class="pan-dir-input">
+              <el-input
+                v-model="form.base_cid"
+                placeholder="点击选择按钮选择网盘目录"
+                :disabled="loading"
+                readonly
+              />
+              <el-button type="primary" @click="openDirSelector(false)" :disabled="loading">
+                选择目录
+              </el-button>
+            </div>
+            <div v-if="selectedDirPath" class="selected-path-inline">
+              <span class="path-label">选中目录路径：</span>
+              <code class="path-url">{{ selectedDirPath }}</code>
+            </div>
+            <div class="form-tip form-tip--block">选择网盘中要同步的目录</div>
           </div>
-          <div v-if="selectedDirPath" class="selected-path-inline">
-            <span class="path-label">选中目录路径：</span>
-            <code class="path-url">{{ selectedDirPath }}</code>
-          </div>
-          <div class="form-tip">选择网盘中要同步的目录</div>
         </el-form-item>
         <el-form-item
           label="目标路径"
@@ -422,18 +432,20 @@
             isEditMode
           "
         >
-          <div class="pan-dir-input">
-            <el-input
-              v-model="form.local_path"
-              placeholder="点击选择按钮选择本地目录"
-              :disabled="loading"
-              readonly
-            />
-            <el-button type="primary" @click="openDirSelector(true)" :disabled="loading">
-              选择目录
-            </el-button>
+          <div class="form-item-stack">
+            <div class="pan-dir-input">
+              <el-input
+                v-model="form.local_path"
+                placeholder="点击选择按钮选择本地目录"
+                :disabled="loading"
+                readonly
+              />
+              <el-button type="primary" @click="openDirSelector(true)" :disabled="loading">
+                选择目录
+              </el-button>
+            </div>
+            <div class="form-tip form-tip--block">选择本地目录作为STRM文件的存放位置</div>
           </div>
-          <div class="form-tip">选择本地目录作为STRM文件的存放位置</div>
         </el-form-item>
 
         <el-form-item
@@ -444,24 +456,28 @@
             isEditMode
           "
         >
-          <el-input
-            v-model="form.strm_path"
-            placeholder="自动计算：本地目录 + 选中目录路径"
-            :disabled="true"
-            readonly
-          />
-          <div class="form-tip">STRM和元数据实际存放目录（自动生成）</div>
+          <div class="form-item-stack">
+            <el-input
+              v-model="form.strm_path"
+              placeholder="自动计算：本地目录 + 选中目录路径"
+              :disabled="true"
+              readonly
+            />
+            <div class="form-tip form-tip--block">STRM和元数据实际存放目录（自动生成）</div>
+          </div>
         </el-form-item>
 
         <el-form-item label="是否自定义设置" prop="custom_config">
-          <el-switch
-            v-model="form.custom_config"
-            :active-value="true"
-            :inactive-value="false"
-            :disabled="loading"
-          />
-          <div class="form-tip">
-            开启后可自定义视频扩展名和元数据扩展名配置，否则使用strm设置中的值
+          <div class="form-item-stack">
+            <el-switch
+              v-model="form.custom_config"
+              :active-value="true"
+              :inactive-value="false"
+              :disabled="loading"
+            />
+            <div class="form-tip form-tip--block">
+              开启后可自定义视频扩展名和元数据扩展名配置，否则使用strm设置中的值
+            </div>
           </div>
         </el-form-item>
 
@@ -1148,6 +1164,20 @@ onUnmounted(() => {
   font-size: 12px;
   color: #909399;
   margin-top: 4px;
+}
+
+.form-tip.form-tip--block {
+  display: block;
+  margin-top: var(--space-2);
+  padding-left: 2px;
+  line-height: var(--leading-relaxed);
+}
+
+.form-item-stack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  width: 100%;
 }
 
 .form-help {

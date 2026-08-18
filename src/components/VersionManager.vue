@@ -28,23 +28,23 @@ const { versionInfo, versionLoading } = useVersion()
 
 <style scoped>
 .info-card {
-  background: white;
-  border-radius: 16px;
-  padding: 20px;
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
-  border: 1px solid #f0f0f0;
+  background: var(--color-bg-elevated);
+  border-radius: var(--radius-xl);
+  padding: var(--space-5);
+  box-shadow: var(--shadow-md);
+  border: 1px solid var(--color-border-subtle);
 }
 
 .info-card-header {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: var(--space-2);
   font-size: 15px;
   font-weight: 600;
-  color: #303133;
-  margin-bottom: 16px;
-  padding-bottom: 12px;
-  border-bottom: 1px solid #f0f0f0;
+  color: var(--color-text-primary);
+  margin-bottom: var(--space-4);
+  padding-bottom: var(--space-3);
+  border-bottom: 1px solid var(--color-border-subtle);
 }
 
 .info-icon {
@@ -54,7 +54,7 @@ const { versionInfo, versionLoading } = useVersion()
 .info-content {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: var(--space-3);
 }
 
 .info-row {
@@ -65,26 +65,26 @@ const { versionInfo, versionLoading } = useVersion()
 
 .info-label {
   font-size: 13px;
-  color: #909399;
+  color: var(--color-text-tertiary);
 }
 
 .info-value {
   font-size: 13px;
-  color: #303133;
+  color: var(--color-text-primary);
   font-weight: 500;
 }
 
 .version-tag {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
-  padding: 4px 12px;
-  border-radius: 20px;
+  background: linear-gradient(135deg, var(--brand-500) 0%, var(--brand-700) 100%);
+  color: var(--color-text-inverse);
+  padding: var(--space-1) var(--space-3);
+  border-radius: var(--radius-full);
   font-size: 12px;
   font-weight: 600;
 }
 
 .empty-state-small {
-  padding: 20px;
+  padding: var(--space-5);
   text-align: center;
 }
 </style>

@@ -1,15 +1,19 @@
 <template>
   <div class="main-content-container">
-    <PageHeader title="API Key 管理" subtitle="管理 API 密钥用于外部访问" :icon="Lock" :icon-size="24" />
+    <PageHeader title="API Key 管理" subtitle="管理 API 密钥用于外部访问" :icon="Lock" :icon-size="24" variant="list">
+      <template #toolbar>
+        <div class="toolbar-right">
+          <el-button type="primary" :icon="Plus" @click="openCreateDialog">
+            <span class="btn-text">新建 API Key</span>
+          </el-button>
+          <el-button :icon="Refresh" @click="loadKeys" :loading="loading">
+            <span class="btn-text">刷新</span>
+          </el-button>
+        </div>
+      </template>
+    </PageHeader>
 
     <div class="page-content">
-      <el-alert type="info" :closable="false" show-icon>
-        <template #title>
-          API Key 认证已启用，可通过在请求中追加 api_key 使用所有需要认证的接口。
-        </template>
-        <p class="alert-tip">完整密钥仅在创建时显示一次，请妥善保存。</p>
-      </el-alert>
-
       <el-table
         :data="apiKeys"
         v-loading="loading"
@@ -286,7 +290,7 @@ onMounted(() => {
   display: flex;
   flex-direction: column;
   gap: var(--space-4);
-  padding: 0 var(--space-3) var(--space-3);
+  padding: var(--space-5);
 }
 
 .keys-table {
@@ -334,14 +338,64 @@ onMounted(() => {
   font-size: var(--text-base);
 }
 
+.toolbar-right {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
 @media (max-width: 768px) {
   .page-content {
-    padding: 0;
+    padding: var(--space-3);
+  }
+
+  .toolbar-right {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .toolbar-right .el-button {
+    flex: 1 1 calc(50% - var(--space-2));
+    min-width: 0;
+  }
+
+  .keys-table {
+    font-size: var(--text-xs);
+  }
+
+  .keys-table :deep(.el-table__cell) {
+    padding: 6px 8px;
+  }
+
+  .keys-table :deep(.el-table__header th) {
+    padding: 6px 8px;
   }
 
   .key-value {
     flex-direction: column;
     align-items: stretch;
+  }
+}
+
+@media (max-width: 480px) {
+  .page-content {
+    padding: var(--space-2);
+  }
+
+  .toolbar-right {
+    gap: var(--space-2);
+  }
+
+  .keys-table {
+    font-size: var(--text-xs);
+  }
+
+  .keys-table :deep(.el-table__cell) {
+    padding: 4px 6px;
+  }
+
+  .keys-table :deep(.el-table__header th) {
+    padding: 4px 6px;
   }
 }
 </style>

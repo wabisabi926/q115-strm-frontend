@@ -1,25 +1,24 @@
 <template>
-  <div class="notification-page">
-    <PageHeader title="通知管理" subtitle="管理系统的通知渠道，支持 Telegram、MeoW、Bark、Server酱、Webhook 等多种推送方式" :icon="Bell" :icon-size="24">
-      <template #actions>
-        <el-button type="primary" :icon="Plus" @click="showCreateDialog">
-          <span class="btn-text">添加渠道</span>
-        </el-button>
-        <el-button :icon="Refresh" @click="loadChannels" :loading="loading">
-          <span class="btn-text">刷新</span>
-        </el-button>
+  <div class="main-content-container notification-page">
+    <PageHeader title="通知管理" subtitle="管理系统的通知渠道，支持 Telegram、MeoW、Bark、Server酱、Webhook 等多种推送方式" :icon="Bell" :icon-size="24" variant="list">
+      <template #toolbar>
+        <div class="toolbar-right">
+          <el-button type="primary" :icon="Plus" @click="showCreateDialog">
+            <span class="btn-text">添加渠道</span>
+          </el-button>
+          <el-button :icon="Refresh" @click="loadChannels" :loading="loading">
+            <span class="btn-text">刷新</span>
+          </el-button>
+        </div>
       </template>
     </PageHeader>
 
-    <div class="main-content-container notification-channels-container">
+    <div class="notification-channels-container">
       <div v-if="channels.length === 0 && !loading" class="empty-state">
         <el-empty description="暂无通知渠道">
           <template #image>
             <el-icon :size="64" color="var(--el-text-color-placeholder)"><Bell /></el-icon>
           </template>
-          <el-button type="primary" :icon="Plus" @click="showCreateDialog"
-            >添加第一个渠道</el-button
-          >
         </el-empty>
       </div>
 
@@ -1127,38 +1126,10 @@ onMounted(() => {
 
 <style scoped>
 .notification-page {
-  padding: 0;
-}
-
-.page-header {
-  padding: var(--space-5) var(--space-6);
-  gap: var(--space-4);
-}
-
-.header-content {
-  gap: var(--space-4);
-}
-
-.header-icon {
-  width: 48px;
-  height: 48px;
-  border-radius: var(--radius-lg);
-}
-
-.header-text h2 {
-  font-size: var(--text-2xl);
-}
-
-.header-desc {
-  font-size: var(--text-sm);
-}
-
-.header-actions {
-  gap: var(--space-2);
 }
 
 .notification-channels-container {
-  padding: var(--space-5) var(--space-6);
+  padding: var(--space-5);
 }
 
 .empty-state {
@@ -1357,30 +1328,21 @@ onMounted(() => {
   color: var(--color-text-tertiary);
 }
 
+.toolbar-right {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
 @media (max-width: 768px) {
-  .page-header {
-    padding: var(--space-3) var(--space-4);
-    flex-direction: row;
-    justify-content: center;
-    gap: var(--space-3);
+  .toolbar-right {
+    width: 100%;
+    justify-content: space-between;
   }
 
-  .header-content {
-    display: none;
-  }
-
-  .header-actions {
-    display: flex;
-    justify-content: center;
-    gap: var(--space-3);
-  }
-
-  .header-actions .el-button {
-    padding: var(--space-2) var(--space-3);
-  }
-
-  .header-actions .btn-text {
-    display: none;
+  .toolbar-right .el-button {
+    flex: 1 1 calc(50% - var(--space-2));
+    min-width: 0;
   }
 
   .notification-channels-container {
@@ -1389,33 +1351,41 @@ onMounted(() => {
 
   .channels-grid {
     grid-template-columns: 1fr;
+    gap: var(--space-3);
   }
 
   .channel-card-header {
     flex-wrap: wrap;
   }
 
+  .channel-info {
+    flex: 1;
+    min-width: 0;
+  }
+
   .channel-card-actions {
-    justify-content: center;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: var(--space-1);
   }
 
   .channel-card-actions .el-button {
-    flex: 1;
-    min-width: 70px;
+    padding: var(--space-1) var(--space-2);
+    font-size: var(--text-xs);
+  }
+
+  .channel-card-actions .el-button .el-icon {
+    font-size: 14px;
   }
 }
 
 @media (max-width: 480px) {
-  .page-header {
-    padding: var(--space-3);
-  }
-
-  .header-actions {
+  .toolbar-right {
     gap: var(--space-2);
   }
 
-  .header-actions .el-button {
-    padding: var(--space-2);
+  .channel-card-actions {
+    grid-template-columns: repeat(2, 1fr);
   }
 
   .channel-type-badge {
@@ -1425,6 +1395,15 @@ onMounted(() => {
 
   .channel-name {
     font-size: var(--text-base);
+  }
+
+  .channel-type-card {
+    padding: var(--space-3);
+  }
+
+  .channel-type-card .channel-type-icon {
+    width: 40px;
+    height: 40px;
   }
 }
 </style>

@@ -1,15 +1,17 @@
 <template>
   <div class="main-content-container main-content-container--list cloud-accounts-page">
     <PageHeader title="网盘账号管理" subtitle="管理网盘账号授权与绑定" :icon="Cloudy" variant="list">
-      <template #actions>
-        <el-button
-          type="primary"
-          class="add-btn"
-          :icon="Plus"
-          @click="showAddAccountDialog = true"
-        >
-          <span class="btn-text">添加账号</span>
-        </el-button>
+      <template #toolbar>
+        <div class="toolbar-right">
+          <el-button
+            type="primary"
+            class="add-btn"
+            :icon="Plus"
+            @click="showAddAccountDialog = true"
+          >
+            <span class="btn-text">添加账号</span>
+          </el-button>
+        </div>
       </template>
     </PageHeader>
     <div class="stats-bar mobile-hidden">

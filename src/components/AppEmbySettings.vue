@@ -97,109 +97,20 @@
               </div>
               <div class="card-header-content">
                 <h3 class="card-title">通知链接配置</h3>
-                <p class="card-subtitle">配置Emby与QMediaSync的通知连接</p>
+                <p class="card-subtitle">Emby 通知链接、鉴权与播放通知设置已移至独立页面</p>
               </div>
             </div>
           </template>
 
-          <el-form-item label="Emby通知链接">
-            <el-input
-              v-model="webhookUrl"
-              readonly
-              class="limited-width-input webhook-input"
-              :prefix-icon="Link"
+          <div class="form-help">
+            <el-icon><InfoFilled /></el-icon>
+            <span
+              >通知链接配置已迁移至
+              <router-link to="/notification-settings/emby" class="help-link"
+                >通知设置</router-link
+              >，请前往「通知设置 > Emby 通知配置」进行配置。</span
             >
-              <template #append>
-                <el-button @click="copyWebhookUrl" :icon="DocumentCopy">复制</el-button>
-              </template>
-            </el-input>
-            <div class="form-help">
-              <el-icon><InfoFilled /></el-icon>
-              <span>将此链接配置到 Emby 的通知设置中，</span>
-              <a
-                :href="embyData.emby_url + '/web/index.html#!/settings/notifications.html'"
-                target="_blank"
-                class="help-link action-link"
-                >去配置</a
-              >
-            </div>
-            <div class="form-help" v-if="embyData.enable_auth">
-              <el-icon><WarningFilled /></el-icon>
-              <span class="warning-text"
-                >已开启鉴权，请确保在 Emby 的通知链接中添加 Api Key 参数，示例：<code
-                  class="inline-code"
-                  >{{ webhookUrl }}?api_key=你的ApiKey</code
-                ></span
-              >
-            </div>
-          </el-form-item>
-
-          <el-form-item label="通知链接鉴权" prop="enable_auth">
-            <div class="switch-wrapper">
-              <el-switch
-                v-model="embyData.enable_auth"
-                :active-value="1"
-                :inactive-value="0"
-                :disabled="embyLoading"
-                active-color="#67c23a"
-                inactive-color="#dcdfe6"
-              />
-              <span class="switch-label" :class="{ 'is-active': embyData.enable_auth }">
-                {{ embyData.enable_auth ? '已启用鉴权' : '已禁用鉴权' }}
-              </span>
-            </div>
-            <div class="form-help">
-              <el-icon><InfoFilled /></el-icon>
-              <span
-                >启用后，Emby 的 Webhook 请求需要携带 Api
-                Key才能生效。如果要在外网使用Emby通知链接建议启用以提高安全性。请到<router-link
-                  to="/settings/api-keys"
-                  class="help-link"
-                  >Api Key 模块</router-link
-                >生成</span
-              >
-            </div>
-          </el-form-item>
-
-          <el-form-item label="播放通知显示剧情简介" prop="enable_playback_overview">
-            <div class="switch-wrapper">
-              <el-switch
-                v-model="embyData.enable_playback_overview"
-                :active-value="1"
-                :inactive-value="0"
-                :disabled="embyLoading"
-                active-color="#67c23a"
-                inactive-color="#dcdfe6"
-              />
-              <span class="switch-label" :class="{ 'is-active': embyData.enable_playback_overview }">
-                {{ embyData.enable_playback_overview ? '已启用' : '已禁用' }}
-              </span>
-            </div>
-            <div class="form-help">
-              <el-icon><InfoFilled /></el-icon>
-              <span>开启后，播放通知将显示当前视频的剧情简介（超过100字自动截断）</span>
-            </div>
-          </el-form-item>
-
-          <el-form-item label="播放通知显示播放进度" prop="enable_playback_progress">
-            <div class="switch-wrapper">
-              <el-switch
-                v-model="embyData.enable_playback_progress"
-                :active-value="1"
-                :inactive-value="0"
-                :disabled="embyLoading"
-                active-color="#67c23a"
-                inactive-color="#dcdfe6"
-              />
-              <span class="switch-label" :class="{ 'is-active': embyData.enable_playback_progress }">
-                {{ embyData.enable_playback_progress ? '已启用' : '已禁用' }}
-              </span>
-            </div>
-            <div class="form-help">
-              <el-icon><InfoFilled /></el-icon>
-              <span>开启后，播放通知将显示当前播放进度和总时长（如：00:15:30 / 00:45:00）</span>
-            </div>
-          </el-form-item>
+          </div>
         </el-card>
 
         <el-card class="settings-card sync-features-card" shadow="hover">
@@ -559,7 +470,6 @@ import {
   Key,
   Connection,
   Setting,
-  DocumentCopy,
   InfoFilled,
   WarningFilled,
   Timer,
@@ -567,7 +477,7 @@ import {
   FolderOpened,
   Calendar,
 } from '@element-plus/icons-vue'
-import { ElMessage, type FormInstance, type FormRules } from 'element-plus'
+import { ElMessage, ElMessageBox, type FormInstance, type FormRules } from 'element-plus'
 import { inject, onMounted, ref, reactive, onBeforeUnmount } from 'vue'
 import { isMobile as checkIsMobile } from '@/utils/deviceUtils'
 
@@ -610,18 +520,6 @@ const availableLibraries = ref<Array<{ library_id: string; name: string }>>([])
 const selectedLibraryIds = ref<string[]>([])
 
 const embyExample = ref('http://192.168.1.100:8096')
-
-const webhookUrl = ref('')
-const updateWebhookUrl = () => {
-  let baseUrl: string
-  if (SERVER_URL === '/api') {
-    baseUrl = window.location.origin
-  } else {
-    baseUrl = SERVER_URL.replace(/\/api$/, '')
-  }
-  console.log(baseUrl)
-  webhookUrl.value = `${baseUrl}/emby/webhook`
-}
 
 const embyStatus = ref<{
   title: string
@@ -829,16 +727,6 @@ const praseEmby = async () => {
 
 const updateEmbyExample = () => {}
 
-const copyWebhookUrl = async () => {
-  try {
-    await navigator.clipboard.writeText(webhookUrl.value)
-    ElMessage.success('Webhook链接已复制到剪贴板')
-  } catch (error) {
-    console.error('复制失败:', error)
-    ElMessage.error('复制失败，请手动复制')
-  }
-}
-
 const fetchCronNextTimes = async () => {
   if (!embyData.sync_cron || !embyData.sync_cron.trim()) {
     cronNextTimes.value = []
@@ -961,7 +849,6 @@ const formatLastSyncTime = (timestamp: number | null | undefined) => {
 onMounted(() => {
   loadEmbyConfig()
   querySyncStatus()
-  updateWebhookUrl()
 })
 
 onBeforeUnmount(() => {
@@ -1076,10 +963,6 @@ onBeforeUnmount(() => {
 
 .limited-width-input {
   max-width: 600px;
-}
-
-.webhook-input :deep(.el-input__wrapper) {
-  background-color: var(--color-bg-muted);
 }
 
 .emby-example-inline {
@@ -1449,6 +1332,97 @@ onBeforeUnmount(() => {
   border-radius: var(--radius-md);
 }
 
+/* ======== API Key 快速访问区 ======== */
+.api-key-quick-section {
+  background: var(--neutral-50);
+  border: 1px dashed var(--color-border-light);
+  border-radius: var(--radius-lg);
+  padding: var(--space-4) var(--space-4);
+  margin: var(--space-2) 0 var(--space-4);
+}
+
+.quick-section-title {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-weight: var(--weight-semibold);
+  color: var(--color-text-primary);
+  font-size: var(--text-sm);
+  margin-bottom: var(--space-3);
+}
+
+.quick-section-title .title-icon {
+  color: var(--brand-500);
+}
+
+.quick-section-body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.quick-section-row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  flex-wrap: wrap;
+}
+
+.quick-row-label {
+  font-size: var(--text-sm);
+  color: var(--color-text-secondary);
+  flex: 0 0 auto;
+}
+
+.key-select {
+  width: 320px;
+  max-width: 100%;
+}
+
+.api-key-help {
+  padding-left: 0;
+}
+
+/* ======== API Key 创建 Dialog 样式（复用 AppApiKeys 的同名类名）======== */
+.created-warning {
+  margin-bottom: var(--space-4);
+}
+
+.created-key-box {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.key-row {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.key-label {
+  font-weight: var(--weight-semibold);
+  color: var(--color-text-primary);
+}
+
+.key-value {
+  display: flex;
+  gap: var(--space-3);
+  align-items: center;
+}
+
+.key-meta {
+  display: flex;
+  gap: var(--space-4);
+  flex-wrap: wrap;
+  color: var(--color-text-secondary);
+  font-size: var(--text-sm);
+}
+
+.key-autofill-row {
+  align-items: flex-start;
+}
+
 @media (max-width: 1200px) {
   .sync-info-grid {
     grid-template-columns: repeat(2, 1fr);
@@ -1630,6 +1604,24 @@ onBeforeUnmount(() => {
   .emby-status-alert,
   .tips-alert {
     border-radius: var(--radius-md);
+  }
+
+  .key-select {
+    width: 100%;
+  }
+
+  .quick-section-row {
+    align-items: stretch;
+  }
+
+  .quick-section-row .el-button {
+    flex: 1 1 calc(50% - var(--space-3));
+    min-width: 120px;
+  }
+
+  .key-value {
+    flex-direction: column;
+    align-items: stretch;
   }
 }
 
