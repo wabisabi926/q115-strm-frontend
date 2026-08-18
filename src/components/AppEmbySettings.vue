@@ -89,30 +89,6 @@
           </div>
         </div>
 
-        <el-card class="settings-card webhook-card" shadow="hover">
-          <template #header>
-            <div class="card-header-wrapper">
-              <div class="card-header-icon webhook-icon">
-                <el-icon :size="24"><Connection /></el-icon>
-              </div>
-              <div class="card-header-content">
-                <h3 class="card-title">通知链接配置</h3>
-                <p class="card-subtitle">Emby 通知链接、鉴权与播放通知设置已移至独立页面</p>
-              </div>
-            </div>
-          </template>
-
-          <div class="form-help">
-            <el-icon><InfoFilled /></el-icon>
-            <span
-              >通知链接配置已迁移至
-              <router-link to="/notification-settings/emby" class="help-link"
-                >通知设置</router-link
-              >，请前往「通知设置 > Emby 通知配置」进行配置。</span
-            >
-          </div>
-        </el-card>
-
         <el-card class="settings-card sync-features-card" shadow="hover">
           <template #header>
             <div class="card-header-wrapper">
@@ -456,7 +432,6 @@ import {
   Monitor,
   Link,
   Key,
-  Connection,
   Setting,
   InfoFilled,
   WarningFilled,
@@ -914,10 +889,6 @@ onBeforeUnmount(() => {
 
 .server-icon {
   background: var(--gradient-hero);
-}
-
-.webhook-icon {
-  background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
 }
 
 .features-icon {
