@@ -147,13 +147,7 @@
             </el-form-item>
             <div class="feature-description">
               <div class="config-links">
-                <span>该功能需要在Emby中配置通知才能生效，</span>
-                <a
-                  :href="embyData.emby_url + '/web/index.html#!/settings/notifications.html'"
-                  target="_blank"
-                  class="help-link action-link"
-                  >去配置</a
-                >
+                <span>该功能需要在Emby中配置通知才能生效</span>
               </div>
               <p class="feature-note">
                 功能解释：QMediaSync在收到Emby的通知某个资源入库后，自动触发提取该资源的媒体信息，加快起播速度。媒体信息指：视频、音频、内封字幕等详细信息
@@ -313,13 +307,7 @@
                 </template>
               </el-alert>
               <div class="config-links">
-                <span>该功能需要在Emby中配置通知才能生效，</span>
-                <a
-                  :href="embyData.emby_url + '/web/index.html#!/settings/notifications.html'"
-                  target="_blank"
-                  class="help-link action-link"
-                  >去配置</a
-                >
+                <span>该功能需要在Emby中配置通知才能生效</span>
               </div>
               <ul class="delete-rules">
                 <li>如果在Emby中删除了电影，会在网盘中将视频文件的父目录一起删除</li>

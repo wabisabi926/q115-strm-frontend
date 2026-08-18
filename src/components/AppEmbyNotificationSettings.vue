@@ -19,13 +19,7 @@
             </el-input>
             <div class="form-help">
               <el-icon><InfoFilled /></el-icon>
-              <span>将此链接配置到 Emby 的通知设置中，</span>
-              <a
-                :href="notificationData.emby_url + '/web/index.html#!/settings/notifications.html'"
-                target="_blank"
-                class="help-link action-link"
-                >去配置</a
-              >
+              <span>将此链接配置到 Emby 的通知设置中</span>
             </div>
             <div class="form-help" v-if="notificationData.enable_auth && !selectedApiKeyId">
               <el-icon><WarningFilled /></el-icon>
@@ -289,13 +283,15 @@ const displayWebhookUrl = computed(() => {
 
 const loadNotificationConfig = async () => {
   try {
-    const res = await http?.get(`${SERVER_URL}/settings/emby`)
-    if (res?.data.code === 200 && res.data.data) {
-      const d = res.data.data
-      notificationData.emby_url = d.emby_url || ''
-      notificationData.enable_auth = d.enable_auth || 0
-      notificationData.enable_playback_overview = d.enable_playback_overview || 0
-      notificationData.enable_playback_progress = d.enable_playback_progress || 0
+    const res = await http?.get(`${SERVER_URL}/setting/emby-config`)
+    if (res?.data.code === 200) {
+      if (res.data.data?.exists && res.data.data?.config) {
+        const d = res.data.data.config
+        notificationData.emby_url = d.emby_url || ''
+        notificationData.enable_auth = d.enable_auth ?? 0
+        notificationData.enable_playback_overview = d.enable_playback_overview ?? 0
+        notificationData.enable_playback_progress = d.enable_playback_progress ?? 0
+      }
     }
   } catch (e) {
     console.error('加载 Emby 通知配置失败:', e)
@@ -305,11 +301,27 @@ const loadNotificationConfig = async () => {
 const saveConfig = async () => {
   try {
     saving.value = true
-    const res = await http?.put(`${SERVER_URL}/settings/emby`, {
+    // 先读取现有配置做字段合并，避免覆盖其他页的设置
+    let existing: any = {}
+    try {
+      const readRes = await http?.get(`${SERVER_URL}/setting/emby-config`)
+      if (readRes?.data.code === 200 && readRes.data.data?.exists && readRes.data.data?.config) {
+        existing = readRes.data.data.config
+      }
+    } catch (_) {
+      // 读取失败时按空对象合并，只提交当前页字段
+    }
+    const payload = {
+      ...existing,
       enable_auth: notificationData.enable_auth,
       enable_playback_overview: notificationData.enable_playback_overview,
       enable_playback_progress: notificationData.enable_playback_progress,
-    })
+    }
+    const res = await http?.post(
+      `${SERVER_URL}/setting/emby-config`,
+      payload,
+      { headers: { 'Content-Type': 'application/json' } },
+    )
     if (res?.data.code === 200) {
       ElMessage.success('保存成功')
     } else {
