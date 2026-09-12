@@ -48,7 +48,7 @@ const handleLogDialogClose = () => {
             <span>使用须知</span>
           </div>
           <div class="notice-list">
-            <div class="notice-item notice-important">
+            <div class="notice-item">
               <span class="notice-number">1</span>
               <span>本项目使用115开放平台，QPS受限，介意勿用</span>
             </div>
@@ -200,10 +200,6 @@ const handleLogDialogClose = () => {
   line-height: var(--leading-normal);
 }
 
-.notice-item.notice-important {
-  color: var(--danger-600);
-}
-
 .notice-number {
   display: flex;
   align-items: center;
@@ -216,11 +212,6 @@ const handleLogDialogClose = () => {
   font-weight: var(--weight-semibold);
   color: var(--color-text-secondary);
   flex-shrink: 0;
-}
-
-.notice-item.notice-important .notice-number {
-  background: var(--danger-50);
-  color: var(--danger-600);
 }
 
 .notice-item a {
