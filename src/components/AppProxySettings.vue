@@ -269,6 +269,8 @@ onMounted(() => {
   color: var(--color-text-tertiary);
   margin-top: var(--space-3);
   line-height: var(--leading-relaxed);
+  width: 100%;
+  flex-basis: 100%;
 }
 
 .proxy-status {

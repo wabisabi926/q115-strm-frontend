@@ -474,6 +474,8 @@ onMounted(() => {
   color: var(--color-text-secondary);
   padding: var(--space-2) 0;
   line-height: 1.5;
+  width: 100%;
+  flex-basis: 100%;
 }
 
 .form-help .el-icon {

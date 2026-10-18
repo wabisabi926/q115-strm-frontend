@@ -1164,6 +1164,8 @@ onUnmounted(() => {
   font-size: 12px;
   color: #909399;
   margin-top: 4px;
+  width: 100%;
+  flex-basis: 100%;
 }
 
 .form-tip.form-tip--block {
@@ -1185,6 +1187,8 @@ onUnmounted(() => {
   color: var(--color-text-tertiary);
   margin-top: var(--space-3);
   line-height: var(--leading-relaxed);
+  width: 100%;
+  flex-basis: 100%;
 }
 
 .form-help p {

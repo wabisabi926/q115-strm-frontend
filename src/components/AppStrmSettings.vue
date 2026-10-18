@@ -180,6 +180,23 @@
         </div>
       </el-form-item>
 
+      <el-form-item label="ISO 原盘文件名" prop="iso_filename">
+        <el-radio-group v-model="strmData.iso_filename">
+          <el-radio-button :label="1">启用</el-radio-button>
+          <el-radio-button :label="0">关闭</el-radio-button>
+        </el-radio-group>
+        <div class="form-help">
+          <p>
+            开启后 ISO 原盘生成「影片名.iso.strm」，Emby
+            会将其识别为 ISO 容器，Infuse 等播放器也更容易正确播放原盘。
+          </p>
+          <p>
+            开关切换后重新执行同步，旧命名的 strm
+            文件会自动迁移，不会出现重复条目。默认关闭，与历史版本行为一致。
+          </p>
+        </div>
+      </el-form-item>
+
       <el-form-item label="启用本地代理播放" prop="local_proxy">
         <el-radio-group v-model="strmData.local_proxy">
           <el-radio-button :label="1">启用</el-radio-button>
@@ -246,6 +263,7 @@ interface StrmData {
   local_proxy: 0 | 1
   exclude_name_arr: string[]
   add_path: 1 | 2
+  iso_filename: 0 | 1
   check_meta_mtime: 0 | 1
 }
 
@@ -267,7 +285,7 @@ const cronTimes = ref<string[]>([])
 const cronTimesLoading = ref(false)
 
 const defaultStrmData: StrmData = {
-  video_ext_arr: ['.mp4', '.mkv', '.avi', '.mov', '.wmv', '.flv', '.webm', '.m4v', '.3gp', '.ts'],
+  video_ext_arr: ['.mp4', '.mkv', '.avi', '.mov', '.wmv', '.flv', '.webm', '.m4v', '.3gp', '.ts', '.iso'],
   min_video_size: 50,
   meta_ext_arr: ['.jpg', '.jpeg', '.png', '.webp', '.nfo', '.srt', '.ass', '.svg', '.sup', '.lrc'],
   cron: '30 * * * *',
@@ -278,6 +296,7 @@ const defaultStrmData: StrmData = {
   local_proxy: 0,
   exclude_name_arr: [],
   add_path: 2,
+  iso_filename: 0,
   check_meta_mtime: 0,
 }
 
@@ -408,6 +427,7 @@ const loadStrmConfig = async () => {
       strmData.local_proxy = config.local_proxy
       strmData.exclude_name_arr = config.exclude_name_arr
       strmData.add_path = config.add_path
+      strmData.iso_filename = config.iso_filename ?? 0
       strmData.check_meta_mtime = config.check_meta_mtime
 
       updateStrmExample()
